@@ -20,10 +20,11 @@ public class UserDetailDAO {
 	private HibernateTemplate hibernateTemplate;
 
 	@SuppressWarnings("unchecked")
-	public List<Users> findByUserName() {
+	public List<Users> findByUserName(String userName) {
+		LOG.info("Inside FindByUserName");
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(Users.class);
-		criteria.add(Restrictions.eq("userName", "raghava"));
+		criteria.add(Restrictions.eq("userName", userName));
 		return criteria.list();
 	}
 }
