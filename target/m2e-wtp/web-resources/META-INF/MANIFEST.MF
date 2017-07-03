@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: SpringPrjExample
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: KVR
+Built-By: KukapalV
 Implementation-Vendor-Id: com.example
-Build-Jdk: 1.8.0_121
+Build-Jdk: 1.8.0_112
 Implementation-URL: http://projects.spring.io/spring-boot/SpringPrjExa
  mple/
 Created-By: Maven Integration for Eclipse
