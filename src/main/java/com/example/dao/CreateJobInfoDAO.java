@@ -54,6 +54,7 @@ public class CreateJobInfoDAO {
 			LOG.error("There exists job with same group.Please enter different job details.", e);
 			return "There exists job with same group.Please enter different job details.";
 		} catch (Exception e) {
+			LOG.error("Exception occured in CreateJobForUserDAO :", e);
 			return "some error occured.Contact system admin.";
 		}
 		return "success";
@@ -93,15 +94,16 @@ public class CreateJobInfoDAO {
 		return "success";
 	}
 
-	private Integer insertIntoUserJobs(JobInfo info) throws ParseException {
+	private void insertIntoUserJobs(JobInfo info) throws ParseException {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		UserJobs userJobs = new UserJobs();
 		userJobs.setId(BigDecimal.valueOf((Math.random() * 1234567890)));
 		userJobs.setUserName(info.getUserName());
 		userJobs.setCreatedDate(new Date());
 		userJobs.setModifiedDate(new Date());
+		userJobs.setSchedulerName("testscheduler");
 		userJobs.setUserJobsDetails(insertIntoUserJobsDetails(info));
-		return (Integer) session.save(userJobs);
+		session.save(userJobs);
 	}
 
 	private UserJobsDetails insertIntoUserJobsDetails(JobInfo info) throws ParseException {

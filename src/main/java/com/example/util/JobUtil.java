@@ -28,7 +28,6 @@ import com.example.model.JobInfo;
 @Component
 public class JobUtil {
 	private static final Logger LOG = LoggerFactory.getLogger(JobUtil.class);
-	@Autowired
 	private static SchedulerFactoryBean schedulerFactoryBean;
 	private static Trigger trigger;
 	private static JobDetail jobDetail;
@@ -146,5 +145,10 @@ public class JobUtil {
 		}
 		LOG.info("generated cronExp : " + cronExp);
 		return cronExp;
+	}
+
+	@Autowired
+	public void setschedulerFactoryBean(SchedulerFactoryBean bean) {
+		JobUtil.schedulerFactoryBean = bean;
 	}
 }
