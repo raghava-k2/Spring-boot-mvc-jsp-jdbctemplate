@@ -42,7 +42,7 @@ public class CreateJobInfoDAO {
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 	@Autowired
-	private static SchedulerFactoryBean schedulerFactoryBean;
+	private SchedulerFactoryBean schedulerFactoryBean;
 	private static final String DATE_FORMAT = "MM/dd/yyyy hh:mm a";
 	private static final String DATE_FORMAT2 = "EEE MMM dd yyyy HH:mm:ss";
 
