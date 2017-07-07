@@ -21,6 +21,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
 import com.example.entity.UserJobs;
+import com.example.entity.UserJobsDetails;
 import com.example.job.DiaplyJob;
 import com.example.model.GLInfo;
 import com.example.model.JobInfo;
@@ -46,15 +47,14 @@ public class JobUtil {
 
 	public static Boolean deleteJob(List<UserJobs> jobDetails) throws SchedulerException {
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
-		if (scheduler
-				.checkExists(TriggerKey.triggerKey(jobDetails.get(0).getUserJobsDetails().getJobName(),
-						jobDetails.get(0).getUserJobsDetails().getJobGrpName()))
-				&& scheduler.checkExists(JobKey.jobKey(jobDetails.get(0).getUserJobsDetails().getJobName(),
-						jobDetails.get(0).getUserJobsDetails().getJobGrpName()))) {
-			scheduler.unscheduleJob(TriggerKey.triggerKey(jobDetails.get(0).getUserJobsDetails().getJobName(),
-					jobDetails.get(0).getUserJobsDetails().getJobGrpName()));
-			scheduler.deleteJob(JobKey.jobKey(jobDetails.get(0).getUserJobsDetails().getJobName(),
-					jobDetails.get(0).getUserJobsDetails().getJobGrpName()));
+		for (UserJobs jobs : jobDetails) {
+			for (UserJobsDetails details : jobs.getUserJobsDetails()) {
+				if (scheduler.checkExists(TriggerKey.triggerKey(details.getJobName(), details.getJobGrpName()))
+						&& scheduler.checkExists(JobKey.jobKey(details.getJobName(), details.getJobGrpName()))) {
+					scheduler.unscheduleJob(TriggerKey.triggerKey(details.getJobName(), details.getJobGrpName()));
+					scheduler.deleteJob(JobKey.jobKey(details.getJobName(), details.getJobGrpName()));
+				}
+			}
 		}
 		return true;
 	}

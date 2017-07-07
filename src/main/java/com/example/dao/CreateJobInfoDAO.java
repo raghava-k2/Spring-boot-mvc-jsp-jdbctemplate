@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -102,12 +103,16 @@ public class CreateJobInfoDAO {
 		userJobs.setCreatedDate(new Date());
 		userJobs.setModifiedDate(new Date());
 		userJobs.setSchedulerName("testscheduler");
-		userJobs.setUserJobsDetails(insertIntoUserJobsDetails(info));
+		//userJobs.setUserJobsDetails(new HashSet<>(Arrays.asList(insertIntoUserJobsDetails(info))));
+		UserJobsDetails details=insertIntoUserJobsDetails(info);
+		details.setUserJobs(userJobs);
 		session.save(userJobs);
+		session.save(details);
 	}
 
 	private UserJobsDetails insertIntoUserJobsDetails(JobInfo info) throws ParseException {
 		UserJobsDetails userJobsDetails = new UserJobsDetails();
+		userJobsDetails.setId(BigDecimal.valueOf((Math.random() * 1234567890)));
 		userJobsDetails.setJobName(info.getJobName());
 		userJobsDetails.setJobDesc(info.getJobDescription());
 		userJobsDetails.setJobGrpName(info.getJobGroupName());
@@ -135,13 +140,15 @@ public class CreateJobInfoDAO {
 			JobInfo jobInfo = new JobInfo();
 			jobInfo.setClientId(((UserJobs) userjob).getId().toString());
 			jobInfo.setUserName(((UserJobs) userjob).getUserName());
-			jobInfo.setJobName(((UserJobs) userjob).getUserJobsDetails().getJobName());
-			jobInfo.setJobGroupName(((UserJobs) userjob).getUserJobsDetails().getJobGrpName());
-			jobInfo.setJobDescription(((UserJobs) userjob).getUserJobsDetails().getJobDesc());
-			this.getQrtxTriggerDetails(jobInfo);
-			this.getQrtxJobDetails(jobInfo);
-			this.getCronDetails(jobInfo);
-			jobInfosList.add(jobInfo);
+			for (UserJobsDetails details : ((UserJobs) userjob).getUserJobsDetails()) {
+				jobInfo.setJobName(details.getJobName());
+				jobInfo.setJobGroupName(details.getJobGrpName());
+				jobInfo.setJobDescription(details.getJobDesc());
+				this.getQrtxTriggerDetails(jobInfo);
+				this.getQrtxJobDetails(jobInfo);
+				this.getCronDetails(jobInfo);
+				jobInfosList.add(jobInfo);
+			}
 		}
 		return jobInfosList;
 	}
@@ -211,18 +218,20 @@ public class CreateJobInfoDAO {
 
 	private Boolean updateUserJob(JobInfo info) throws SQLException {
 		for (UserJobs jobs : getJobDetailsById(info.getClientId())) {
-			jobs.setModifiedDate(new Date());
-			jobs.getUserJobsDetails().setJobDesc(info.getJobDescription());
-			if (StringUtil.isStringNullOrEmpty(info.getJobDateTime()))
-				jobs.getUserJobsDetails().setJobDateTime(new Date());
-			else {
-				try {
-					jobs.getUserJobsDetails().setJobDateTime(DateUtil.getDate(info.getJobDateTime(), DATE_FORMAT2));
-				} catch (ParseException e) {
+			for (UserJobsDetails details : jobs.getUserJobsDetails()) {
+				jobs.setModifiedDate(new Date());
+				details.setJobDesc(info.getJobDescription());
+				if (StringUtil.isStringNullOrEmpty(info.getJobDateTime()))
+					details.setJobDateTime(new Date());
+				else {
+					try {
+						details.setJobDateTime(DateUtil.getDate(info.getJobDateTime(), DATE_FORMAT2));
+					} catch (ParseException e) {
+					}
 				}
+				details.setModifiedDate(new Date());
+				hibernateTemplate.getSessionFactory().getCurrentSession().saveOrUpdate(jobs);
 			}
-			jobs.getUserJobsDetails().setModifiedDate(new Date());
-			hibernateTemplate.getSessionFactory().getCurrentSession().saveOrUpdate(jobs);
 		}
 		return true;
 	}
