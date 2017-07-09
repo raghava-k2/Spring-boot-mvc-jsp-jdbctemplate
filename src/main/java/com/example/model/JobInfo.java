@@ -16,6 +16,7 @@ public class JobInfo {
 	private GLInfo glInfo;
 	private String nextExecTime;
 	private String status;
+	private String jobId;
 
 	public String getJobEndtime() {
 		return jobEndtime;
@@ -119,5 +120,13 @@ public class JobInfo {
 
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
+	}
+
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
 	}
 }

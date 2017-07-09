@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
-import com.example.entity.UserJobs;
 import com.example.entity.UserJobsDetails;
 import com.example.job.DiaplyJob;
 import com.example.model.GLInfo;
@@ -45,16 +44,14 @@ public class JobUtil {
 		return jobDetail;
 	}
 
-	public static Boolean deleteJob(List<UserJobs> jobDetails) throws SchedulerException {
+	public static Boolean deleteJob(List<UserJobsDetails> jobDetails) throws SchedulerException {
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
-		for (UserJobs jobs : jobDetails) {
-			for (UserJobsDetails details : jobs.getUserJobsDetails()) {
+			for (UserJobsDetails details : jobDetails) {
 				if (scheduler.checkExists(TriggerKey.triggerKey(details.getJobName(), details.getJobGrpName()))
 						&& scheduler.checkExists(JobKey.jobKey(details.getJobName(), details.getJobGrpName()))) {
 					scheduler.unscheduleJob(TriggerKey.triggerKey(details.getJobName(), details.getJobGrpName()));
 					scheduler.deleteJob(JobKey.jobKey(details.getJobName(), details.getJobGrpName()));
 				}
-			}
 		}
 		return true;
 	}

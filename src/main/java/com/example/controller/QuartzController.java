@@ -29,12 +29,12 @@ public class QuartzController {
 	}
 
 	@RequestMapping(path = "/updatejob", method = RequestMethod.POST)
-	public JSONData updateJob(JobInfo info) {
+	public JSONData updateJob(@RequestBody JobInfo info) {
 		return schedulerService.updateJobDetails(info);
 	}
 
 	@RequestMapping(path = "/deletejob", method = RequestMethod.POST)
-	public JSONData deleteJob(List<String> clientIds) {
+	public JSONData deleteJob(@RequestBody List<String> clientIds) {
 		return schedulerService.deleteJobs(clientIds);
 	}
 }
