@@ -1,6 +1,11 @@
 package com.example.dao;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -11,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.example.entity.UserGroups;
 import com.example.entity.Users;
+import com.example.model.UserInfo;
 
 @Repository
 public class UserDetailDAO {
@@ -26,5 +33,20 @@ public class UserDetailDAO {
 		Criteria criteria = session.createCriteria(Users.class);
 		criteria.add(Restrictions.eq("userName", userName));
 		return criteria.list();
+	}
+
+	public void saveUser(UserInfo info) {
+		LOG.info("Inside saveUsergroup method");
+		Users users = new Users();
+		UserGroups groups = new UserGroups(BigDecimal.valueOf(new Random().nextDouble()), users, "USER", new Date(),
+				new Date());
+		users.setUserId(BigDecimal.valueOf(new Random().nextDouble()));
+		users.setUserName(info.getUserName());
+		users.setPassword(info.getPassword());
+		users.setActive("Y");
+		users.setCreatedDate(new Date());
+		users.setModifiedDate(new Date());
+		users.setUserGroupses(new HashSet<UserGroups>(Arrays.asList(groups)));
+		hibernateTemplate.getSessionFactory().getCurrentSession().save(users);
 	}
 }

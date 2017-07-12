@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -53,7 +54,6 @@ public class Users implements java.io.Serializable {
 	}
 
 	@Id
-
 	@Column(name = "USER_ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public BigDecimal getUserId() {
 		return this.userId;
@@ -108,7 +108,7 @@ public class Users implements java.io.Serializable {
 		this.modifiedDate = modifiedDate;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "users")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "users", cascade = CascadeType.ALL)
 	public Set<UserGroups> getUserGroupses() {
 		return this.userGroupses;
 	}

@@ -48,7 +48,6 @@ public class UserGroups implements java.io.Serializable {
 	}
 
 	@Id
-
 	@Column(name = "GROUP_ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public BigDecimal getGroupId() {
 		return this.groupId;

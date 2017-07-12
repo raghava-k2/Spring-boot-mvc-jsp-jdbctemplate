@@ -27,8 +27,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		LOG.info(http.toString());
 		http.csrf().disable();
-		http.authorizeRequests().antMatchers("/").permitAll().anyRequest().authenticated().and().httpBasic().and()
-				.sessionManagement().disable();
+		http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/user/createuser").permitAll().anyRequest()
+				.authenticated().and().httpBasic().and().sessionManagement().disable();
 	}
 
 	@Override

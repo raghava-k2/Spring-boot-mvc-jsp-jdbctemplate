@@ -6,7 +6,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -28,8 +30,8 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Repository;
 
-import com.example.entity.UserJobs;
-import com.example.entity.UserJobsDetails;
+import com.example.entity.Job;
+import com.example.entity.JobDetails;
 import com.example.model.GLInfo;
 import com.example.model.JobInfo;
 import com.example.util.DateUtil;
@@ -48,8 +50,8 @@ public class CreateJobInfoDAO {
 
 	public String createJobforUser(JobInfo info) {
 		try {
-			this.insertIntoUserJobs(info);
 			this.addJobToscheduler(info);
+			this.insertIntoUserJobs(info);
 		} catch (ObjectAlreadyExistsException e) {
 			LOG.error("There exists job with same group.Please enter different job details.", e);
 			return "There exists job with same group.Please enter different job details.";
@@ -73,7 +75,7 @@ public class CreateJobInfoDAO {
 
 	public String deleteJob(String jobId) {
 		try {
-			List<UserJobsDetails> list = this.getUserJobDetailsById(jobId);
+			List<JobDetails> list = this.getUserJobDetailsById(jobId);
 			deleteJobDetails(jobId);
 			this.deleteQrtzJob(list);
 		} catch (SQLException | SchedulerException e) {
@@ -103,27 +105,26 @@ public class CreateJobInfoDAO {
 
 	private void insertIntoUserJobs(JobInfo info) throws ParseException {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		List<UserJobs> jobList = getUserJobByName(info.getUserName());
+		List<Job> jobList = getUserJobByName(info.getUserName());
 		if (jobList.isEmpty()) {
-			UserJobs userJobs = new UserJobs();
-			userJobs.setId(BigDecimal.valueOf((Math.random() * 1234567890)));
+			Job userJobs = new Job();
+			userJobs.setId(BigDecimal.valueOf(new Random().nextDouble()));
 			userJobs.setUserName(info.getUserName());
 			userJobs.setCreatedDate(new Date());
 			userJobs.setModifiedDate(new Date());
 			userJobs.setSchedulerName("testscheduler");
-			UserJobsDetails details = insertIntoUserJobsDetails(info, userJobs);
+			userJobs.setJobsDetails(new HashSet<JobDetails>(Arrays.asList(insertIntoUserJobsDetails(info, userJobs))));
 			session.save(userJobs);
-			session.save(details);
 		} else {
-			for (UserJobs jobs : jobList) {
+			for (Job jobs : jobList) {
 				session.save(insertIntoUserJobsDetails(info, jobs));
 			}
 		}
 	}
 
-	private UserJobsDetails insertIntoUserJobsDetails(JobInfo info, UserJobs userJobs) throws ParseException {
-		UserJobsDetails userJobsDetails = new UserJobsDetails();
-		userJobsDetails.setId(BigDecimal.valueOf((Math.random() * 1234567890)));
+	private JobDetails insertIntoUserJobsDetails(JobInfo info, Job userJobs) throws ParseException {
+		JobDetails userJobsDetails = new JobDetails();
+		userJobsDetails.setId(BigDecimal.valueOf(new Random().nextDouble()));
 		userJobsDetails.setJobName(info.getJobName());
 		userJobsDetails.setJobDesc(info.getJobDescription());
 		userJobsDetails.setJobGrpName(info.getJobGroupName());
@@ -133,7 +134,7 @@ public class CreateJobInfoDAO {
 			userJobsDetails.setJobDateTime(DateUtil.getDate(info.getJobDateTime(), DATE_FORMAT2));
 		userJobsDetails.setCreatedDate(new Date());
 		userJobsDetails.setModifiedDate(new Date());
-		userJobsDetails.setUserJobs(userJobs);
+		userJobsDetails.setJob(userJobs);
 		return userJobsDetails;
 	}
 
@@ -144,15 +145,15 @@ public class CreateJobInfoDAO {
 	private List<JobInfo> getAllJobDetails(String jobName) throws SQLException, SchedulerException {
 		List<JobInfo> jobInfosList = new ArrayList<>();
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(UserJobs.class);
+		Criteria criteria = session.createCriteria(Job.class);
 		if (!StringUtil.isStringNullOrEmpty(jobName))
 			criteria.add(Restrictions.eq("userName", jobName));
 		criteria.addOrder(Order.desc("createdDate"));
 		for (Object userjob : criteria.list()) {
 			JobInfo jobInfo = new JobInfo();
-			jobInfo.setClientId(((UserJobs) userjob).getId().toString());
-			jobInfo.setUserName(((UserJobs) userjob).getUserName());
-			for (UserJobsDetails details : ((UserJobs) userjob).getUserJobsDetails()) {
+			jobInfo.setClientId(((Job) userjob).getId().toString());
+			jobInfo.setUserName(((Job) userjob).getUserName());
+			for (JobDetails details : ((Job) userjob).getJobsDetails()) {
 				jobInfo.setJobName(details.getJobName());
 				jobInfo.setJobGroupName(details.getJobGrpName());
 				jobInfo.setJobDescription(details.getJobDesc());
@@ -213,27 +214,27 @@ public class CreateJobInfoDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<UserJobs> getJobDetailsById(String id) {
+	private List<Job> getJobDetailsById(String id) {
 		LOG.info("Search user job by client Id :" + id);
-		return hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(UserJobs.class)
+		return hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(Job.class)
 				.add(Restrictions.eq("id", new BigDecimal(id))).list();
 	}
 
 	private Boolean deleteJobDetails(String id) throws SQLException {
-		for (UserJobsDetails job : getUserJobDetailsById(id)) {
+		for (JobDetails job : getUserJobDetailsById(id)) {
 			hibernateTemplate.getSessionFactory().getCurrentSession().delete(job);
 		}
 		return true;
 	}
 
-	private Boolean deleteQrtzJob(List<UserJobsDetails> jobDetails) throws SchedulerException {
+	private Boolean deleteQrtzJob(List<JobDetails> jobDetails) throws SchedulerException {
 		return JobUtil.deleteJob(jobDetails);
 	}
 
 	private Boolean updateUserJob(JobInfo info) throws SQLException {
-		for (UserJobs jobs : getJobDetailsById(info.getClientId())) {
+		for (Job jobs : getJobDetailsById(info.getClientId())) {
 			jobs.setModifiedDate(new Date());
-			for (UserJobsDetails details : jobs.getUserJobsDetails()) {
+			for (JobDetails details : jobs.getJobsDetails()) {
 				if (details.getId().toString().equals(info.getJobId())) {
 					details.setJobDesc(info.getJobDescription());
 					if (StringUtil.isStringNullOrEmpty(info.getJobDateTime()))
@@ -257,16 +258,16 @@ public class CreateJobInfoDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<UserJobs> getUserJobByName(String username) {
+	public List<Job> getUserJobByName(String username) {
 		LOG.info("Find Job details by userName :", username);
-		return hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(UserJobs.class)
+		return hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(Job.class)
 				.add(Restrictions.eq("userName", username)).list();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<UserJobsDetails> getUserJobDetailsById(String id) {
+	public List<JobDetails> getUserJobDetailsById(String id) {
 		LOG.info("Find Job details by jobId :", id);
-		return hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(UserJobs.class)
+		return hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(Job.class)
 				.add(Restrictions.eq("id", new BigDecimal(id))).list();
 	}
 }
