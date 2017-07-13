@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -108,7 +107,6 @@ public class CreateJobInfoDAO {
 		List<Job> jobList = getUserJobByName(info.getUserName());
 		if (jobList.isEmpty()) {
 			Job userJobs = new Job();
-			userJobs.setId(BigDecimal.valueOf(new Random().nextDouble()));
 			userJobs.setUserName(info.getUserName());
 			userJobs.setCreatedDate(new Date());
 			userJobs.setModifiedDate(new Date());
@@ -124,7 +122,6 @@ public class CreateJobInfoDAO {
 
 	private JobDetails insertIntoUserJobsDetails(JobInfo info, Job userJobs) throws ParseException {
 		JobDetails userJobsDetails = new JobDetails();
-		userJobsDetails.setId(BigDecimal.valueOf(new Random().nextDouble()));
 		userJobsDetails.setJobName(info.getJobName());
 		userJobsDetails.setJobDesc(info.getJobDescription());
 		userJobsDetails.setJobGrpName(info.getJobGroupName());
@@ -150,10 +147,10 @@ public class CreateJobInfoDAO {
 			criteria.add(Restrictions.eq("userName", jobName));
 		criteria.addOrder(Order.desc("createdDate"));
 		for (Object userjob : criteria.list()) {
-			JobInfo jobInfo = new JobInfo();
-			jobInfo.setClientId(((Job) userjob).getId().toString());
-			jobInfo.setUserName(((Job) userjob).getUserName());
 			for (JobDetails details : ((Job) userjob).getJobsDetails()) {
+				JobInfo jobInfo = new JobInfo();
+				jobInfo.setClientId(((Job) userjob).getId().toString());
+				jobInfo.setUserName(((Job) userjob).getUserName());
 				jobInfo.setJobName(details.getJobName());
 				jobInfo.setJobGroupName(details.getJobGrpName());
 				jobInfo.setJobDescription(details.getJobDesc());
@@ -246,9 +243,9 @@ public class CreateJobInfoDAO {
 						}
 					}
 					details.setModifiedDate(new Date());
-					hibernateTemplate.getSessionFactory().getCurrentSession().saveOrUpdate(jobs);
 				}
 			}
+			hibernateTemplate.getSessionFactory().getCurrentSession().saveOrUpdate(jobs);
 		}
 		return true;
 	}
@@ -267,7 +264,7 @@ public class CreateJobInfoDAO {
 	@SuppressWarnings("unchecked")
 	public List<JobDetails> getUserJobDetailsById(String id) {
 		LOG.info("Find Job details by jobId :", id);
-		return hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(Job.class)
+		return hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(JobDetails.class)
 				.add(Restrictions.eq("id", new BigDecimal(id))).list();
 	}
 }

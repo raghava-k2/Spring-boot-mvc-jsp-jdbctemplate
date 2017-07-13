@@ -1,11 +1,9 @@
 package com.example.dao;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -38,15 +36,22 @@ public class UserDetailDAO {
 	public void saveUser(UserInfo info) {
 		LOG.info("Inside saveUsergroup method");
 		Users users = new Users();
-		UserGroups groups = new UserGroups(BigDecimal.valueOf(new Random().nextDouble()), users, "USER", new Date(),
-				new Date());
-		users.setUserId(BigDecimal.valueOf(new Random().nextDouble()));
 		users.setUserName(info.getUserName());
 		users.setPassword(info.getPassword());
 		users.setActive("Y");
 		users.setCreatedDate(new Date());
 		users.setModifiedDate(new Date());
-		users.setUserGroupses(new HashSet<UserGroups>(Arrays.asList(groups)));
+		users.setUserGroupses(new HashSet<UserGroups>(Arrays.asList(setUserGroups(users))));
 		hibernateTemplate.getSessionFactory().getCurrentSession().save(users);
+	}
+
+	private UserGroups setUserGroups(Users user) {
+		UserGroups groups = new UserGroups();
+		groups.setGroupName("USER");
+		groups.setGroupDesc("User group");
+		groups.setCreatedDate(new Date());
+		groups.setModifiedDate(new Date());
+		groups.setUsers(user);
+		return groups;
 	}
 }

@@ -10,8 +10,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -48,6 +51,8 @@ public class Job implements java.io.Serializable {
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+	@SequenceGenerator(name = "SEQ_GEN", sequenceName = "JOB_SEQ")
 	public BigDecimal getId() {
 		return this.id;
 	}
