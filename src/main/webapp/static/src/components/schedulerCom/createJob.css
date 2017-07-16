@@ -1,0 +1,6 @@
+.filterSection > div > div {
+    display: inline-block;
+}
+.jobSection > div > div,.runtimeSection > div > div{
+    margin-left: 10px;
+}

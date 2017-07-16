@@ -1,0 +1,17 @@
+.customadd,.customremove{
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    border-width: 6px;
+    border-style: double;
+    border-radius: 50%;
+    color: white;
+    position: relative;
+    line-height: 20px;
+    font-size: initial;
+    text-align: center;
+    cursor: pointer;
+    box-sizing: content-box;
+    box-shadow: 0px 0px 3px burlywood;
+    background-color: rgb(0, 188, 212);
+}

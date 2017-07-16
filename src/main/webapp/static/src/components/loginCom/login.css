@@ -1,0 +1,12 @@
+.login{
+    position: fixed;
+    top: 35%;
+    left: 35%;
+    display: block;
+    background-color: papayawhip;
+    width: 500px;
+    padding: 25px 20px;
+    border-radius: 13px;
+    box-sizing: content-box;
+    box-shadow: 10px 10px 30px;
+}

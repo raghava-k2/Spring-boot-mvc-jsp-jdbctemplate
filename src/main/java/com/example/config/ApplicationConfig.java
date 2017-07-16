@@ -25,8 +25,8 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public InternalResourceViewResolver configureInternalResourceViewResolver() {
 		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-		resolver.setPrefix("/jsp/");
-		resolver.setSuffix(".jsp");
+		resolver.setPrefix("/static/build/");
+		resolver.setSuffix(".html");
 		return resolver;
 	}
 
@@ -40,7 +40,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/static/**").addResourceLocations("/static/", "/static/js/");
+		registry.addResourceHandler("/static/**").addResourceLocations("/static/", "/build/");
 	}
 
 	@Override
