@@ -80,7 +80,7 @@ export default class RegisterUser extends Component {
                                 value={this.props.userDetails.password}
                                 onChange={(e, v) => this.storeUserInfo('ADD_PASSWORD', e.target.value)}/>
                             <FieldGroup
-                                id='pwd'
+                                id='cnfpwd'
                                 type='password'
                                 label='Confirm Password'
                                 placeholder='Password'

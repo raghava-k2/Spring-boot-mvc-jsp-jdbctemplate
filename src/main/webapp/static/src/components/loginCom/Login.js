@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {Button} from 'react-bootstrap'
 import RegisterUser from '../../containers/loginCon/RegisterUserContainer'
+import Loading from '../../components/loadingCom/Loading'
 import FieldGroup from '../util/util'
 import './login.css'
 class Login extends Component {
@@ -10,7 +11,8 @@ class Login extends Component {
         location: PropTypes.object.isRequired,
         history: PropTypes.object.isRequired,
         createJobData: PropTypes.object.isRequired,
-        showCreateJobDialog: PropTypes.func.isRequired
+        showCreateJobDialog: PropTypes.func.isRequired,
+        loadingStatus: PropTypes.object.isRequired
     }
     constructor(props) {
         super(props)
@@ -58,6 +60,7 @@ class Login extends Component {
                     }}>Register here</a>
                 </form>
                 <RegisterUser show={this.props.createJobData.show}/>
+                <Loading show={this.props.loadingStatus.isFetching}/>
             </div>
 
         )

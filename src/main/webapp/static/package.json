@@ -2,7 +2,7 @@
 	"name": "react-spring",
 	"version": "0.1.0",
 	"private": true,
-	"homepage": "/static/build/",
+	"homepage": "./static/build/",
 	"dependencies": {
 		"history": "^4.6.3",
 		"material-ui": "^0.18.6",

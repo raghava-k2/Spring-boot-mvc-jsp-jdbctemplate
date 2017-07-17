@@ -4,7 +4,7 @@ import {showDialog} from '../../actions'
 import Login from '../../components/loginCom/Login'
 
 const mapStateToProps = (state) => {
-    return {createJobData: state.jobReducer}
+    return {createJobData: state.jobReducer, loadingStatus: state.createUserReducer}
 }
 const mapDispatchToProps = (dispatch) => {
     return {

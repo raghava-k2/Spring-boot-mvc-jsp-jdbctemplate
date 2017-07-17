@@ -1,7 +1,7 @@
-const loginReducer = (state = {
+export const loginReducer = (state = {
     userName: '',
     password: '',
-    confpassword: '',
+    confPassword: '',
     emailId: ''
 }, action) => {
     switch (action.type) {
@@ -17,4 +17,21 @@ const loginReducer = (state = {
             return state
     }
 }
-export default loginReducer
+
+export const createUserReducer = (state = {
+    isFetching: false
+}, action) => {
+    switch (action.type) {
+        case 'REQUEST_CREATE_USER':
+            return Object.assign({}, state, {isFetching: action.value})
+        case 'RESPONSE_CREATE_USER':
+            return Object.assign({}, state, {
+                isFetching: action.value
+            }, {
+                data: action.data,
+                receivedAt: action.receivedAt
+            })
+        default:
+            return state
+    }
+}

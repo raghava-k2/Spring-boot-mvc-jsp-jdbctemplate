@@ -1,5 +1,6 @@
 /target/
 /.settings
 /.mvn
+/node_modules
 .classpath*
 .project*

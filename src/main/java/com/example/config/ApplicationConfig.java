@@ -11,6 +11,7 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -48,6 +49,11 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 		registry.addViewController("/home").setViewName("home");
 		registry.addViewController("/").setViewName("index");
 		registry.addViewController("/login").setViewName("login");
+	}
+	
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		 registry.addMapping("/**").allowedOrigins("http://localhost:3000");
 	}
 
 	@Bean
