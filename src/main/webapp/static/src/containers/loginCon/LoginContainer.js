@@ -1,15 +1,16 @@
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 import {withRouter} from 'react-router'
+import {showDialog} from '../../actions'
 import Login from '../../components/loginCom/Login'
 
 const mapStateToProps = (state) => {
-    return {
-
-    }
+    return {createJobData: state.jobReducer}
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-
+        showCreateJobDialog: (status) => {
+            dispatch(showDialog(status))
+        }
     }
 }
 
