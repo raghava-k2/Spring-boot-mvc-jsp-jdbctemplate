@@ -4,7 +4,6 @@ import {showDialog, storeRegistDetails, createNewUser} from '../../actions'
 import RegisterUser from '../../components/loginCom/RegisterUser'
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return {userDetails: state.loginReducer}
 }
 const mapDispatchToProps = (dispatch) => {

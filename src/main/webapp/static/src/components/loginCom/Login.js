@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {Button} from 'react-bootstrap'
+import {Button, Well} from 'react-bootstrap'
 import RegisterUser from '../../containers/loginCon/RegisterUserContainer'
 import Loading from '../../components/loadingCom/Loading'
 import FieldGroup from '../util/util'
@@ -12,7 +12,10 @@ class Login extends Component {
         history: PropTypes.object.isRequired,
         createJobData: PropTypes.object.isRequired,
         showCreateJobDialog: PropTypes.func.isRequired,
-        loadingStatus: PropTypes.object.isRequired
+        loadingStatus: PropTypes.object.isRequired,
+        userDetails: PropTypes.object.isRequired,
+        storeUserData: PropTypes.func.isRequired,
+        login: PropTypes.func.isRequired
     }
     constructor(props) {
         super(props)
@@ -27,7 +30,16 @@ class Login extends Component {
             .props
             .showCreateJobDialog(true)
     }
+
+    storeUserInfo(action, value) {
+        this
+            .props
+            .storeUserData(action, value)
+    }
+
     render() {
+        if (this.props.userDetails.errorMsg === 'success') 
+            this.props.history.push('/home')
         return (
             <div className='login'>
                 <form
@@ -35,21 +47,27 @@ class Login extends Component {
                     e.preventDefault();
                     this
                         .props
-                        .history
-                        .push('/home')
+                        .login();
                 }}>
+                    {this.props.userDetails.errorMsg && <Well
+                        style={{
+                        color: 'indianred'
+                    }}>{this.props.userDetails.errorMsg}</Well>
+}
                     <FieldGroup
                         id='user'
                         type='text'
                         label='User'
                         placeholder='Enter UserName'
-                        onChange={e => this.user = e.target.value}/>
+                        value={this.props.userDetails.userName}
+                        onChange={(e, v) => this.storeUserInfo('ADD_USER_NAME', e.target.value)}/>
                     <FieldGroup
                         id='pwd'
                         type='password'
                         label='Password'
                         placeholder='Enter Password'
-                        onChange={e => this.pwd = e.target.value}/>
+                        value={this.props.userDetails.password}
+                        onChange={(e, v) => this.storeUserInfo('ADD_PASSWORD', e.target.value)}/>
                     <Button type="submit" bsStyle="primary">
                         Submit</Button>
                     <a

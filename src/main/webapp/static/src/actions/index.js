@@ -1,8 +1,11 @@
 import fetch from 'isomorphic-fetch'
 import {ActionUtil} from './actionUtil'
 import URL from '../constants/url'
+import {loginUser} from './loginAction'
+import * as loading from './loadingAction'
 let headers = new Headers();
 headers.set('content-type', 'application/json;charset=UTF-8')
+
 export const showMenu = (show) => {
   return {type: 'SHOW_MENU', show}
 }
@@ -19,18 +22,10 @@ export const storeRegistDetails = (type, value) => {
   return {type, value}
 }
 
-const receivePosts = (value, json) => {
-  return {value, type: 'RESPONSE_CREATE_USER'}
-}
-
-const requestPosts = (value) => {
-  return {type: 'REQUEST_CREATE_USER', value}
-}
-
 export const createNewUser = () => {
   return (dispatch, getState) => {
     if (ActionUtil.checkValidations(getState().loginReducer) === null) {
-      dispatch(requestPosts(true))
+      dispatch(loading.loadingRequest(true))
       return fetch(URL.createUserUrl, {
         method: 'POST',
         body: JSON.stringify(getState().loginReducer),
@@ -38,10 +33,10 @@ export const createNewUser = () => {
       }).then(response => {
         return response.text()
       }).then(text => {
-        dispatch(receivePosts(false))
+        dispatch(loading.loadingResponse(false))
         dispatch(storeRegistDetails('ADD_ERROR_MSG', text))
       }).catch(response => {
-        dispatch(receivePosts(false))
+        dispatch(loading.loadingResponse(false))
         dispatch(storeRegistDetails('ADD_ERROR_MSG', response.message))
       })
     } else {
@@ -49,3 +44,5 @@ export const createNewUser = () => {
     }
   }
 }
+
+export {loginUser}

@@ -29,19 +29,14 @@ export const loginReducer = (state = {
     }
 }
 
-export const createUserReducer = (state = {
+export const loadingStatus = (state = {
     isFetching: false
 }, action) => {
     switch (action.type) {
-        case 'REQUEST_CREATE_USER':
+        case 'REQUEST_IS_PROCESSING':
             return Object.assign({}, state, {isFetching: action.value})
-        case 'RESPONSE_CREATE_USER':
-            return Object.assign({}, state, {
-                isFetching: action.value
-            }, {
-                data: action.data,
-                receivedAt: action.receivedAt
-            })
+        case 'REQUEST_IS_RECEIVED':
+            return Object.assign({}, state, {isFetching: action.value})
         default:
             return state
     }

@@ -13,4 +13,12 @@ export class ActionUtil {
         else 
             return null
     }
+    static checkLoginValidations(obj) {
+        if (!obj.userName) 
+            return 'userName is mandatory'
+        else if (!obj.password) 
+            return 'Password is mandatory'
+        else 
+            return null
+    }
 }
