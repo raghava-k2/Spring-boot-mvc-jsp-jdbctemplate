@@ -15,7 +15,9 @@ public class UserService {
 
 	@Transactional
 	public String createUser(UserInfo info) {
+		if (!userDetailDAO.findByUserName(info.getUserName()).isEmpty())
+			return "Already username is registed.Please use different one";
 		userDetailDAO.saveUser(info);
-		return "success";
+		return "successfully created user";
 	}
 }

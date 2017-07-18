@@ -1,6 +1,8 @@
 import fetch from 'isomorphic-fetch'
+import {ActionUtil} from './actionUtil'
+import URL from '../constants/url'
 let headers = new Headers();
-headers.append('Authorization', 'Basic ' +btoa('raghava:raghava'));
+headers.set('content-type', 'application/json;charset=UTF-8')
 export const showMenu = (show) => {
   return {type: 'SHOW_MENU', show}
 }
@@ -18,16 +20,7 @@ export const storeRegistDetails = (type, value) => {
 }
 
 const receivePosts = (value, json) => {
-  console.log(json)
-  return {
-    value,
-    type: 'RESPONSE_CREATE_USER',
-    data: json
-      .data
-      .children
-      .map(child => child.data),
-    receivedAt: Date.now()
-  }
+  return {value, type: 'RESPONSE_CREATE_USER'}
 }
 
 const requestPosts = (value) => {
@@ -36,12 +29,23 @@ const requestPosts = (value) => {
 
 export const createNewUser = () => {
   return (dispatch, getState) => {
-    console.log('inbside dispatch action', getState())
-    dispatch(requestPosts(true))
-    return fetch(`http://localhost:8080/jobdetails`, {
+    if (ActionUtil.checkValidations(getState().loginReducer) === null) {
+      dispatch(requestPosts(true))
+      return fetch(URL.createUserUrl, {
+        method: 'POST',
+        body: JSON.stringify(getState().loginReducer),
         headers: headers
+      }).then(response => {
+        return response.text()
+      }).then(text => {
+        dispatch(receivePosts(false))
+        dispatch(storeRegistDetails('ADD_ERROR_MSG', text))
+      }).catch(response => {
+        dispatch(receivePosts(false))
+        dispatch(storeRegistDetails('ADD_ERROR_MSG', response.message))
       })
-      .then(response => response.json())
-      .then(json => dispatch(receivePosts(false, json)))
+    } else {
+      dispatch(storeRegistDetails('ADD_ERROR_MSG', ActionUtil.checkValidations(getState().loginReducer)))
+    }
   }
 }

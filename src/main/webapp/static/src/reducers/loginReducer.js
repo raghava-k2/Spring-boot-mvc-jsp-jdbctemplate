@@ -1,8 +1,9 @@
 export const loginReducer = (state = {
+    errorMsg: '',
     userName: '',
     password: '',
     confPassword: '',
-    emailId: ''
+    email: ''
 }, action) => {
     switch (action.type) {
         case 'ADD_USER_NAME':
@@ -12,7 +13,17 @@ export const loginReducer = (state = {
         case 'ADD_CONF_PASSWORD':
             return Object.assign({}, state, {confPassword: action.value})
         case 'ADD_EMAIL_ID':
-            return Object.assign({}, state, {emailId: action.value})
+            return Object.assign({}, state, {email: action.value})
+        case 'ADD_ERROR_MSG':
+            return Object.assign({}, state, {errorMsg: action.value})
+        case 'CLEAR_DATA':
+            return Object.assign({}, state, {
+                errorMsg: '',
+                userName: '',
+                password: '',
+                confPassword: '',
+                email: ''
+            })
         default:
             return state
     }

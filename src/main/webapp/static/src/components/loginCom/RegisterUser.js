@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import FieldGroup from '../util/util'
-import {Button} from 'react-bootstrap'
+import {Button, Well} from 'react-bootstrap'
 
 export default class RegisterUser extends Component {
     static propTypes = {
@@ -28,6 +28,9 @@ export default class RegisterUser extends Component {
         this
             .props
             .showCreateJobDialog(false)
+        this
+            .props
+            .storeUserData('CLEAR_DATA', false)
     }
 
     handleSubmit() {
@@ -64,7 +67,11 @@ export default class RegisterUser extends Component {
                             onSubmit={e => {
                             e.preventDefault();
                             this.handleSubmit(e)
-                        }}>
+                        }}>{this.props.userDetails.errorMsg && <Well
+                                style={{
+                                color: 'indianred'
+                            }}>{this.props.userDetails.errorMsg}</Well>
+}
                             <FieldGroup
                                 id='user'
                                 type='text'
@@ -87,11 +94,11 @@ export default class RegisterUser extends Component {
                                 value={this.props.userDetails.confPassword}
                                 onChange={(e, v) => this.storeUserInfo('ADD_CONF_PASSWORD', e.target.value)}/>
                             <FieldGroup
-                                id='pwd'
+                                id='email'
                                 type='email'
-                                label='Password'
+                                label='Email'
                                 placeholder='Enter Email Id'
-                                value={this.props.userDetails.emailId}
+                                value={this.props.userDetails.email}
                                 onChange={(e, v) => this.storeUserInfo('ADD_EMAIL_ID', e.target.value)}/>
                             <Button type="submit" bsStyle="primary">
                                 Submit</Button>
