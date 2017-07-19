@@ -73,3 +73,12 @@ export const jobDetailsReducer = (state = {
             return state
     }
 }
+
+export const jobResults = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD_JOB_RESULT':
+            return Object.assign([], state, action.value)
+        default:
+            return state
+    }
+}

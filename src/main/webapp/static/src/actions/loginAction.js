@@ -8,14 +8,14 @@ const loginDetails = (type, value) => {
 
 export const loginUser = () => {
     return (dispatch, getState) => {
-        console.log('inside login action', getState())
         if (ActionUtil.checkLoginValidations(getState().loginReducer) === null) {
             dispatch(loading.loadingRequest(true))
+            debugger;
             return fetch(URL.loginUser, {
                 method: 'GET',
                 auth: {
-                    username: getState().userName,
-                    password: getState().password
+                    username: getState().loginReducer.userName,
+                    password: getState().loginReducer.password
                 },
                 credentials: 'include'
             }).then(response => {

@@ -20,7 +20,9 @@ class Scheduler extends Component {
     static propTypes = {
         match: PropTypes.object.isRequired,
         createJobData: PropTypes.object.isRequired,
-        showCreateJobDialog: PropTypes.func.isRequired
+        showCreateJobDialog: PropTypes.func.isRequired,
+        jobResults: PropTypes.array.isRequired,
+        searchJob: PropTypes.func.isRequired
     }
     constructor(props) {
         super(props)
@@ -42,7 +44,9 @@ class Scheduler extends Component {
             .showCreateJobDialog(true)
     }
     handleSubmit(e) {
-        console.log(this)
+        this
+            .props
+            .searchJob(this)
     }
 
     addSearchValues(data) {
@@ -111,21 +115,24 @@ class Scheduler extends Component {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {[1, 2, 3, 4, 5].map((obj, i) => {
-                                return (
-                                    <TableRow key={obj}>
-                                        <TableRowColumn>
-                                            <a href='' onClick={this.handleDialog}>{obj}</a>
-                                        </TableRowColumn>
-                                        <TableRowColumn>
-                                            group{obj}
-                                        </TableRowColumn>
-                                        <TableRowColumn>{new Date().toLocaleDateString()}</TableRowColumn>
-                                        <TableRowColumn>status{obj}</TableRowColumn>
-                                        <TableRowColumn>username{obj}</TableRowColumn>
-                                    </TableRow>
-                                )
-                            })}
+                            {this
+                                .props
+                                .jobResults
+                                .map((obj, i) => {
+                                    return (
+                                        <TableRow key={obj}>
+                                            <TableRowColumn>
+                                                <a href='' onClick={this.handleDialog}>{obj.jobName}</a>
+                                            </TableRowColumn>
+                                            <TableRowColumn>
+                                                {obj.jobGroupName}
+                                            </TableRowColumn>
+                                            <TableRowColumn>{obj.jobDateTime}</TableRowColumn>
+                                            <TableRowColumn>{obj.status}</TableRowColumn>
+                                            <TableRowColumn>{obj.userName}</TableRowColumn>
+                                        </TableRow>
+                                    )
+                                })}
 
                         </TableBody>
                     </Table>

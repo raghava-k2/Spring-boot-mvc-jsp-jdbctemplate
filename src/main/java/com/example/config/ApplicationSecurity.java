@@ -41,7 +41,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/user/createuser").permitAll()
 				.antMatchers("/static/**").permitAll().anyRequest().authenticated().and().httpBasic().and()
 				.sessionManagement().disable();
-		http.addFilterBefore(new WebSecurityCorsFilter(), ChannelProcessingFilter.class);
+		http.headers().disable();
+			http.addFilterBefore(new WebSecurityCorsFilter(), ChannelProcessingFilter.class);
 	}
 
 	@Override
