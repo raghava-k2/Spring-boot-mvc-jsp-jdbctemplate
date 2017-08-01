@@ -10,7 +10,6 @@ export const loginUser = () => {
     return (dispatch, getState) => {
         if (ActionUtil.checkLoginValidations(getState().loginReducer) === null) {
             dispatch(loading.loadingRequest(true))
-            debugger;
             return fetch(URL.loginUser, {
                 method: 'GET',
                 auth: {

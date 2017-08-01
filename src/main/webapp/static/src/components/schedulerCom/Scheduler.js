@@ -22,7 +22,8 @@ class Scheduler extends Component {
         createJobData: PropTypes.object.isRequired,
         showCreateJobDialog: PropTypes.func.isRequired,
         jobResults: PropTypes.array.isRequired,
-        searchJob: PropTypes.func.isRequired
+        searchJob: PropTypes.func.isRequired,
+        insertSelectedJobDetails: PropTypes.func.isRequired
     }
     constructor(props) {
         super(props)
@@ -37,11 +38,14 @@ class Scheduler extends Component {
             .bind(this)
     }
 
-    handleDialog(e) {
+    handleDialog(e, index) {
         e.preventDefault()
         this
             .props
             .showCreateJobDialog(true)
+        this
+            .props
+            .insertSelectedJobDetails(index)
     }
     handleSubmit(e) {
         this
@@ -122,7 +126,7 @@ class Scheduler extends Component {
                                     return (
                                         <TableRow key={obj}>
                                             <TableRowColumn>
-                                                <a href='' onClick={this.handleDialog}>{obj.jobName}</a>
+                                                <a href='' onClick={e => this.handleDialog(e, i)}>{obj.jobName}</a>
                                             </TableRowColumn>
                                             <TableRowColumn>
                                                 {obj.jobGroupName}

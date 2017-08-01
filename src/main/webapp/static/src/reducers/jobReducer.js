@@ -69,6 +69,8 @@ export const jobDetailsReducer = (state = {
             return Object.assign({}, state, {week: action.value})
         case 'ADD_DAYS_DETAILS':
             return setDays(state, action.day, action.value)
+        case 'INSERT_DETAILS':
+            return Object.assign({}, state, action.value)
         default:
             return state
     }

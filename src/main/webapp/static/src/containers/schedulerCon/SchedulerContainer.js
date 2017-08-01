@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router'
-import {showDialog, searchJob} from '../../actions'
+import {showDialog, searchJob, insertJobDetailsIntoDialog} from '../../actions'
 import Scheduler from '../../components/schedulerCom/Scheduler'
 
 const mapStateToProps = (state) => {
@@ -13,6 +13,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         searchJob: (params) => {
             dispatch(searchJob(params))
+        },
+        insertSelectedJobDetails: (index) => {
+            dispatch(insertJobDetailsIntoDialog(index))
         }
     }
 }

@@ -3,7 +3,7 @@ import {ActionUtil} from './actionUtil'
 import URL from '../constants/url'
 import {loginUser} from './loginAction'
 import * as loading from './loadingAction'
-import {searchJob} from './jobSearchAction'
+import {searchJob, insertJobDetailsIntoDialog} from './jobSearchAction'
 let headers = new Headers();
 headers.set('content-type', 'application/json;charset=UTF-8')
 
@@ -47,4 +47,4 @@ export const createNewUser = () => {
 }
 
 export {loginUser}
-export {searchJob}
+export {searchJob, insertJobDetailsIntoDialog}

@@ -91,13 +91,17 @@ export default class CreateJob extends Component {
                                         <Subheader>Job Details</Subheader>
                                         <TextField
                                             hintText="ex:orpan job"
-                                            errorText="This field is required"
-                                            floatingLabelText="Enter Job Name"
+                                            errorText={this.props.jobDetails.jobName
+                                            ? ''
+                                            : 'This field is required'}
+                                            floatingLabelText='Enter Job Name'
                                             onChange={(e, v) => this.handleChange('ADD_JOB_DETAILS', v)}
                                             value={this.props.jobDetails.jobName}/>
                                         <TextField
                                             hintText="ex:daily runs"
-                                            errorText="This field is required"
+                                            errorText={this.props.jobDetails.jobGrpName
+                                            ? ''
+                                            : "This field is required"}
                                             floatingLabelText="Enter Job Group Name"
                                             onChange={(e, v) => this.handleChange('ADD_JOB_GRP_DETAILS', v)}
                                             value={this.props.jobDetails.jobGrpName}/>
@@ -243,7 +247,9 @@ export default class CreateJob extends Component {
                                         </SelectField>
                                         <TextField
                                             hintText="ex:outputfile.csv"
-                                            errorText="This field is required"
+                                            errorText={this.props.jobDetails.outputFileName
+                                            ? ''
+                                            : 'This field is required'}
                                             floatingLabelText="Enter OutputFile Name"
                                             value={this.props.jobDetails.outputFileName}
                                             onChange={(e, v) => this.handleChange('ADD_OUTPUT_FILE_NAME_DETAILS', v)}/>
