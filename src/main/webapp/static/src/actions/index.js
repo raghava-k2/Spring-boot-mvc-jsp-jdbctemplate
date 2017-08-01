@@ -25,7 +25,7 @@ export const storeRegistDetails = (type, value) => {
 
 export const createNewUser = () => {
   return (dispatch, getState) => {
-    if (ActionUtil.checkValidations(getState().loginReducer) === null) {
+    if (!ActionUtil.checkValidations(getState().loginReducer)) {
       dispatch(loading.loadingRequest(true))
       return fetch(URL.createUserUrl, {
         method: 'POST',

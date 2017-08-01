@@ -12,6 +12,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
+import {Well} from 'react-bootstrap'
 import './createJob.css'
 
 export default class CreateJob extends Component {
@@ -84,6 +85,11 @@ export default class CreateJob extends Component {
                     onRequestClose={this.handleClose}
                     autoScrollBodyContent={true}>
                     <div style={this.styles.root}>
+                        {this.props.jobDetails.msg && <Well
+                            style={{
+                            color: 'indianred'
+                        }}>{this.props.jobDetails.msg}</Well>
+}
                         <Tabs >
                             <Tab label="Job">
                                 <section className='jobSection'>

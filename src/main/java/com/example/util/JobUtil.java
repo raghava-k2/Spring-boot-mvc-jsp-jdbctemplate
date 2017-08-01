@@ -46,12 +46,12 @@ public class JobUtil {
 
 	public static Boolean deleteJob(List<JobDetails> jobDetails) throws SchedulerException {
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
-			for (JobDetails details : jobDetails) {
-				if (scheduler.checkExists(TriggerKey.triggerKey(details.getJobName(), details.getJobGrpName()))
-						&& scheduler.checkExists(JobKey.jobKey(details.getJobName(), details.getJobGrpName()))) {
-					scheduler.unscheduleJob(TriggerKey.triggerKey(details.getJobName(), details.getJobGrpName()));
-					scheduler.deleteJob(JobKey.jobKey(details.getJobName(), details.getJobGrpName()));
-				}
+		for (JobDetails details : jobDetails) {
+			if (scheduler.checkExists(TriggerKey.triggerKey(details.getJobName(), details.getJobGrpName()))
+					&& scheduler.checkExists(JobKey.jobKey(details.getJobName(), details.getJobGrpName()))) {
+				scheduler.unscheduleJob(TriggerKey.triggerKey(details.getJobName(), details.getJobGrpName()));
+				scheduler.deleteJob(JobKey.jobKey(details.getJobName(), details.getJobGrpName()));
+			}
 		}
 		return true;
 	}
@@ -76,9 +76,11 @@ public class JobUtil {
 	private static JobDetail updateExistingJobDetails(JobDetail detail, JobInfo info) {
 		JobDataMap dataMap = detail.getJobDataMap();
 		GLInfo glInfo = (GLInfo) dataMap.get(detail.getKey().getName());
-		glInfo.setGlFileName(info.getGlInfo().getGlFileName());
-		glInfo.setOutputFileName(info.getGlInfo().getOutputFileName());
+		glInfo.setFileSpec(info.getGlInfo().getFileSpec());
 		glInfo.setMapName(info.getGlInfo().getMapName());
+		glInfo.setPayroll(info.getGlInfo().getPayroll());
+		glInfo.setOutputFile(info.getGlInfo().getOutputFile());
+		glInfo.setOutputFileName(info.getGlInfo().getOutputFileName());
 		detail.getJobBuilder().withDescription(info.getJobDescription());
 		return detail;
 	}

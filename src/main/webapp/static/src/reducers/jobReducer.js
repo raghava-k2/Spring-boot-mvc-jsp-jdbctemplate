@@ -20,6 +20,7 @@ export const jobReducer = (state = {
 }
 
 export const jobDetailsReducer = (state = {
+    msg: '',
     jobName: '',
     jobGrpName: '',
     startDate: null,

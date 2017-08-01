@@ -23,6 +23,6 @@ public class DiaplyJob implements Job {
 			}
 		}
 		System.out.println(detail.getJobClass() + "|" + detail.getKey().getName() + "|" + detail.getKey().getGroup());
-		System.out.println(glInfo.getGlFileName() + "|" + glInfo.getMapName() + "|" + glInfo.getOutputFileName());
+		System.out.println(glInfo.getFileSpec() + "|" + glInfo.getMapName() + "|" + glInfo.getOutputFileName());
 	}
 }
