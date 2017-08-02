@@ -1,5 +1,9 @@
+import fetch from 'isomorphic-fetch'
+import axios from 'axios'
 import URL from '../constants/url'
 import * as loading from './loadingAction'
+let headers = new Headers();
+headers.set('content-type', 'application/json;charset=UTF-8')
 
 const searchDetails = (type, value) => {
     return {type, value}
@@ -52,6 +56,9 @@ export const insertJobDetailsIntoDialog = (index) => {
     return (dispatch, getState) => {
         let data = getState().jobResults[index]
         dispatch(jobDetails('INSERT_DETAILS', {
+            isUpdate: true,
+            clientId: data.clientId,
+            jobId: data.jobId,
             jobName: data.jobName,
             jobGrpName: data.jobGroupName,
             startDate: new Date(Date.parse(data.jobDateTime)),
@@ -86,4 +93,84 @@ const markDays = (days) => {
         day[Object.keys(day)[d - 1]] = true
     });
     return day;
+}
+
+export const updateJobDetails = (updateOrCreate) => {
+    return (dispatch, getState) => {
+        dispatch(loading.loadingRequest(true))
+        return axios({
+            method: 'post',
+            url: (updateOrCreate
+                ? URL.updateJob
+                : URL.createJob),
+            data: JSON.stringify(createData(getState().jobDetailsReducer)),
+            headers: {
+                'content-type': 'application/json;charset=UTF-8'
+            },
+            auth: {
+                username: getState().loginReducer.userName,
+                password: getState().loginReducer.password
+            },
+            withCredentials: true
+        }).then(response => {
+            dispatch(loading.loadingRequest(false))
+            dispatch(jobDetails('ADD_MSG', response.data.msg))
+        }).catch(response => {
+            dispatch(loading.loadingRequest(false))
+            console.log(response)
+        })
+    }
+}
+
+const createData = (data) => {
+    return {
+        clientId: data.clientId,
+        jobId: data.jobId,
+        jobName: data.jobName,
+        jobDescription: (data.jobName + data.jobGrpName),
+        jobGroupName: data.jobGrpName,
+        jobDateTime: getDate(data.startDate, data.startTime),
+        jobEndtime: getDate(data.endDate, data.endTime),
+        glInfo: {
+            fileSpec: data.fileSpec,
+            mapName: data.mapName,
+            payroll: data.payroll,
+            outputFile: data.outputFile,
+            outputFileName: data.outputFileName
+        },
+        jobExeDays: getDays(data.days),
+        jobExeMonths: []
+    }
+}
+
+const getDate = (date, time) => {
+    if (date && time) {
+        let d = new Date()
+        if (time) 
+            d.setTime(time.getTime())
+        else 
+            d.setTime(0)
+        d.setDate(date.getDate())
+        d.setMonth(date.getMonth())
+        d.setYear(date.getYear())
+        return d.toString()
+    }
+    return null
+}
+const getDays = (days) => {
+    return Object
+        .keys(days)
+        .map((day, i) => {
+            if (days[day]) 
+                return (i + 1)
+            else 
+                return null
+        })
+        .filter((o, i) => {
+            if (o) 
+                return true;
+            else 
+                return false;
+            }
+        )
 }

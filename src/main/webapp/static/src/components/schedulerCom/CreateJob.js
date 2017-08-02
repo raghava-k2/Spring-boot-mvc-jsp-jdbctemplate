@@ -20,7 +20,8 @@ export default class CreateJob extends Component {
         match: PropTypes.object.isRequired,
         jobDetails: PropTypes.object.isRequired,
         showCreateJobDialog: PropTypes.func.isRequired,
-        addJobDetails: PropTypes.func.isRequired
+        addJobDetails: PropTypes.func.isRequired,
+        updateJob: PropTypes.func.isRequired
     }
 
     constructor(props) {
@@ -50,7 +51,7 @@ export default class CreateJob extends Component {
     handleSubmit() {
         this
             .props
-            .showCreateJobDialog(false)
+            .updateJob(this.props.jobDetails.isUpdate)
     }
     handleChange(selectedList, value, day) {
         this
@@ -87,7 +88,7 @@ export default class CreateJob extends Component {
                     <div style={this.styles.root}>
                         {this.props.jobDetails.msg && <Well
                             style={{
-                            color: 'indianred'
+                            color: 'darkgreen'
                         }}>{this.props.jobDetails.msg}</Well>
 }
                         <Tabs >

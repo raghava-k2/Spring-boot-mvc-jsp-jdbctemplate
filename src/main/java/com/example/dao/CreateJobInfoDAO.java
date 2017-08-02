@@ -89,8 +89,8 @@ public class CreateJobInfoDAO {
 
 	public String updateJobDetails(JobInfo info) {
 		try {
+			updateQrtzJob(info);
 			updateUserJob(info);
-			this.updateQrtzJob(info);
 		} catch (SQLException | ParseException e) {
 			LOG.error("SQL/Scheduler Exception in updateJobDeails method :", e);
 			return "Unable to update the Job";

@@ -128,7 +128,7 @@ public class JobUtil {
 	private static String buildCronExpression(java.util.Date date, List<String> weekdays, List<String> months) {
 		@SuppressWarnings("deprecation")
 		String cronExp = date.getSeconds() + " " + date.getMinutes() + " " + date.getHours() + " " + "?" + " ";
-		if (months.size() == 12 || months.size() == 0)
+		if (null == months || months.size() == 12 || months.size() == 0)
 			cronExp += "*" + " ";
 		else {
 			for (String month : months)

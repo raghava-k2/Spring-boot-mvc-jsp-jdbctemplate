@@ -1,3 +1,4 @@
+import {deepClear} from '../components/util/util'
 const setDays = (state, day, action) => {
     Object
         .keys(state.days)
@@ -20,7 +21,10 @@ export const jobReducer = (state = {
 }
 
 export const jobDetailsReducer = (state = {
+    isUpdate: false,
     msg: '',
+    clientId: '',
+    jobId: '',
     jobName: '',
     jobGrpName: '',
     startDate: null,
@@ -72,6 +76,26 @@ export const jobDetailsReducer = (state = {
             return setDays(state, action.day, action.value)
         case 'INSERT_DETAILS':
             return Object.assign({}, state, action.value)
+        case 'ADD_MSG':
+            return Object.assign({}, state, {msg: action.value})
+        case 'CLEAR_VALUES':
+            deepClear(state);
+            return Object.assign({}, state, {
+                startDate: null,
+                startTime: null,
+                endDate: null,
+                endTime: null,
+                week: 'daily',
+                days: {
+                    sunday: true,
+                    monday: true,
+                    tuesday: true,
+                    wednesday: true,
+                    thrusday: true,
+                    friday: true,
+                    saturday: true
+                }
+            })
         default:
             return state
     }

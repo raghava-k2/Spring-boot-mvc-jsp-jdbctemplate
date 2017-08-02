@@ -36,6 +36,12 @@ class Scheduler extends Component {
         this.addSearchValues = this
             .addSearchValues
             .bind(this)
+        this.handleAdd = this
+            .handleAdd
+            .bind(this)
+        this.handleDelete = this
+            .handleDelete
+            .bind(this)
     }
 
     handleDialog(e, index) {
@@ -55,6 +61,17 @@ class Scheduler extends Component {
 
     addSearchValues(data) {
         Object.assign(this, data)
+    }
+
+    handleAdd(e) {
+        e.preventDefault();
+        this
+            .props
+            .showCreateJobDialog(true)
+    }
+
+    handleDelete(e) {
+        e.preventDefault();
     }
 
     render() {
@@ -105,8 +122,8 @@ class Scheduler extends Component {
                         marginLeft: '20px',
                         marginTop: '10px'
                     }}>
-                        <div className='customadd'>+</div>
-                        <div className='customremove'>-</div>
+                        <div className='customadd' onClick={this.handleAdd}>+</div>
+                        <div className='customremove' onClick={this.handleDelete}>-</div>
                     </section>
                     <Table>
                         <TableHeader>

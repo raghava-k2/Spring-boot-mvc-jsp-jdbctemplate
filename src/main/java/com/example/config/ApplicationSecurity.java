@@ -8,6 +8,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers("/static/**").permitAll().anyRequest().authenticated().and().httpBasic().and()
 				.sessionManagement().disable();
 		http.headers().disable();
-			http.addFilterBefore(new WebSecurityCorsFilter(), ChannelProcessingFilter.class);
+		http.addFilterBefore(new WebSecurityCorsFilter(), ChannelProcessingFilter.class);
 	}
 
 	@Override
@@ -66,7 +67,10 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 			res.setHeader("Access-Control-Allow-Credentials", "true");
 			res.setHeader("Access-Control-Allow-Headers",
 					"Authorization, Content-Type, Accept, x-requested-with, Cache-Control");
-			chain.doFilter(request, res);
+			if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) request).getMethod()))
+				((HttpServletResponse) response).setStatus(HttpServletResponse.SC_OK);
+			else
+				chain.doFilter(request, response);
 		}
 
 		@Override
