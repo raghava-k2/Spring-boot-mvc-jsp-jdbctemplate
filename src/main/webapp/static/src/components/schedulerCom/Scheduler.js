@@ -12,6 +12,7 @@ import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
+import Snackbar from 'material-ui/Snackbar';
 import {Label} from 'react-bootstrap'
 import CreateJob from '../../containers/schedulerCon/CreateJobContainer'
 import './scheduler.css'
@@ -23,7 +24,11 @@ class Scheduler extends Component {
         showCreateJobDialog: PropTypes.func.isRequired,
         jobResults: PropTypes.array.isRequired,
         searchJob: PropTypes.func.isRequired,
-        insertSelectedJobDetails: PropTypes.func.isRequired
+        insertSelectedJobDetails: PropTypes.func.isRequired,
+        deleteList: PropTypes.array.isRequired,
+        insertIntoDeleteList: PropTypes.func.isRequired,
+        schedulerInfo: PropTypes.object.isRequired,
+        deleteJob: PropTypes.func.isRequired
     }
     constructor(props) {
         super(props)
@@ -41,6 +46,12 @@ class Scheduler extends Component {
             .bind(this)
         this.handleDelete = this
             .handleDelete
+            .bind(this)
+        this.isSelected = this
+            .isSelected
+            .bind(this)
+        this.handleRowSelection = this
+            .handleRowSelection
             .bind(this)
     }
 
@@ -72,6 +83,21 @@ class Scheduler extends Component {
 
     handleDelete(e) {
         e.preventDefault();
+        this
+            .props
+            .deleteJob()
+    }
+
+    isSelected(id) {
+        return (this.props.deleteList.indexOf(id) !== -1)
+    }
+
+    handleRowSelection(id) {
+        this
+            .props
+            .insertIntoDeleteList((id.length === 0
+                ? 'notall'
+                : id), this.props.jobResults.length)
     }
 
     render() {
@@ -125,7 +151,7 @@ class Scheduler extends Component {
                         <div className='customadd' onClick={this.handleAdd}>+</div>
                         <div className='customremove' onClick={this.handleDelete}>-</div>
                     </section>
-                    <Table>
+                    <Table onRowSelection={this.handleRowSelection} multiSelectable={true}>
                         <TableHeader>
                             <TableRow>
                                 <TableHeaderColumn>Job</TableHeaderColumn>
@@ -135,13 +161,13 @@ class Scheduler extends Component {
                                 <TableHeaderColumn>UserName</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
-                        <TableBody>
+                        <TableBody stripedRows={true}>
                             {this
                                 .props
                                 .jobResults
                                 .map((obj, i) => {
                                     return (
-                                        <TableRow key={i}>
+                                        <TableRow key={obj.jobId} selected={this.isSelected(i)}>
                                             <TableRowColumn>
                                                 <a href='' onClick={e => this.handleDialog(e, i)}>{obj.jobName}</a>
                                             </TableRowColumn>
@@ -159,6 +185,10 @@ class Scheduler extends Component {
                     </Table>
                 </Paper>
                 <CreateJob show={this.props.createJobData.show}/>
+                <Snackbar
+                    open={this.props.schedulerInfo.msg.length > 0}
+                    message={this.props.schedulerInfo.msg}
+                    autoHideDuration={2000}/>
             </div>
         )
     }

@@ -6,11 +6,11 @@ let headers = new Headers();
 headers.set('content-type', 'application/json;charset=UTF-8')
 
 const searchDetails = (type, value) => {
-    return { type, value }
+    return {type, value}
 }
 
 const jobDetails = (type, value) => {
-    return { type, value }
+    return {type, value}
 }
 
 const preparequeryStrng = (params, username) => {
@@ -147,9 +147,9 @@ const createData = (data, userNm) => {
 const getDate = (date, time) => {
     if (date && time) {
         let d = new Date()
-        if (time)
+        if (time) 
             d.setTime(time.getTime())
-        else
+        else 
             d.setTime(0)
         d.setDate(date.getDate())
         d.setMonth(date.getMonth())
@@ -162,16 +162,61 @@ const getDays = (days) => {
     return Object
         .keys(days)
         .map((day, i) => {
-            if (days[day])
+            if (days[day]) 
                 return (i + 1)
-            else
+            else 
                 return null
         })
         .filter((o, i) => {
-            if (o)
+            if (o) 
                 return true;
-            else
+            else 
                 return false;
-        }
+            }
         )
+}
+
+export const addDeleteList = (value, size) => {
+    return {type: 'ADD_JOB_ID', value, size}
+}
+
+const schedulerMessage = (value) => {
+    return {type: 'ADD_SCHEDULER_MSG', value}
+}
+
+export const deleteJobs = () => {
+    return (dispatch, getState) => {
+        dispatch(loading.loadingRequest(true))
+        return axios({
+            method: 'post',
+            url: URL.deleteJob,
+            data: JSON.stringify(createDeleteData(getState().jobResults, getState().deleteList)),
+            headers: {
+                'content-type': 'application/json;charset=UTF-8'
+            },
+            auth: {
+                username: getState().loginReducer.userName,
+                password: getState().loginReducer.password
+            },
+            withCredentials: true
+        }).then(response => {
+            dispatch(loading.loadingRequest(false))
+            dispatch(schedulerMessage(response.data.msg))
+            dispatch(addDeleteList('notall'))
+        }).catch(response => {
+            dispatch(loading.loadingRequest(false))
+            dispatch(schedulerMessage("Error occured while deleting"))
+        })
+    }
+}
+
+const createDeleteData = (data, indexs) => {
+    return data.filter((value, i) => {
+        if (indexs.indexOf(i) !== -1) 
+            return true
+        else 
+            return false
+    }).map((value, i) => {
+        return value.jobId
+    })
 }

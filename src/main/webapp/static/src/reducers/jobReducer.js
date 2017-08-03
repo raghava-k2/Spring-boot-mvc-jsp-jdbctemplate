@@ -109,3 +109,44 @@ export const jobResults = (state = [], action) => {
             return state
     }
 }
+
+export const deleteList = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD_JOB_ID':
+            return Object.assign([], validateList(state, action.value, action.size))
+        default:
+            return state
+    }
+}
+
+const validateList = (state, values, size) => {
+    if (values === 'all') {
+        let array = []
+        for (let i = 0; i < size; i++) 
+            array.push(i)
+        return array
+    } else if (values === 'notall') {
+        return []
+    }
+    let flag = true
+    values.forEach((value, i) => {
+        if (state.indexOf(value) === -1) 
+            state.push(value)
+        else if (value !== i && flag) {
+            flag = false
+            state.splice(i, 1)
+        }
+    });
+    return state;
+}
+
+export const schedulerData = (state = {
+    msg: ''
+}, action) => {
+    switch (action.type) {
+        case 'ADD_SCHEDULER_MSG':
+            return Object.assign({}, state, {msg: action.value})
+        default:
+            return state
+    }
+}

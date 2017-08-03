@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux'
 import homeReducer from './homeReducer'
 import {loginReducer, loadingStatus} from './loginReducer'
-import {jobReducer, jobDetailsReducer, jobResults} from './jobReducer'
+import {jobReducer, jobDetailsReducer, jobResults, deleteList, schedulerData} from './jobReducer'
 
 const reducerApp = combineReducers({
     homeReducer,
@@ -9,7 +9,9 @@ const reducerApp = combineReducers({
     jobDetailsReducer,
     loginReducer,
     loadingStatus,
-    jobResults
+    jobResults,
+    deleteList,
+    schedulerData
 })
 
 export default reducerApp
