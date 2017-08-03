@@ -6,11 +6,11 @@ let headers = new Headers();
 headers.set('content-type', 'application/json;charset=UTF-8')
 
 const searchDetails = (type, value) => {
-    return {type, value}
+    return { type, value }
 }
 
 const jobDetails = (type, value) => {
-    return {type, value}
+    return { type, value }
 }
 
 const preparequeryStrng = (params, username) => {
@@ -103,7 +103,7 @@ export const updateJobDetails = (updateOrCreate) => {
             url: (updateOrCreate
                 ? URL.updateJob
                 : URL.createJob),
-            data: JSON.stringify(createData(getState().jobDetailsReducer)),
+            data: JSON.stringify(createData(getState().jobDetailsReducer, getState().loginReducer.userName)),
             headers: {
                 'content-type': 'application/json;charset=UTF-8'
             },
@@ -122,8 +122,9 @@ export const updateJobDetails = (updateOrCreate) => {
     }
 }
 
-const createData = (data) => {
+const createData = (data, userNm) => {
     return {
+        userName: userNm,
         clientId: data.clientId,
         jobId: data.jobId,
         jobName: data.jobName,
@@ -146,9 +147,9 @@ const createData = (data) => {
 const getDate = (date, time) => {
     if (date && time) {
         let d = new Date()
-        if (time) 
+        if (time)
             d.setTime(time.getTime())
-        else 
+        else
             d.setTime(0)
         d.setDate(date.getDate())
         d.setMonth(date.getMonth())
@@ -161,16 +162,16 @@ const getDays = (days) => {
     return Object
         .keys(days)
         .map((day, i) => {
-            if (days[day]) 
+            if (days[day])
                 return (i + 1)
-            else 
+            else
                 return null
         })
         .filter((o, i) => {
-            if (o) 
+            if (o)
                 return true;
-            else 
+            else
                 return false;
-            }
+        }
         )
 }

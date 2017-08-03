@@ -141,7 +141,7 @@ class Scheduler extends Component {
                                 .jobResults
                                 .map((obj, i) => {
                                     return (
-                                        <TableRow key={obj}>
+                                        <TableRow key={i}>
                                             <TableRowColumn>
                                                 <a href='' onClick={e => this.handleDialog(e, i)}>{obj.jobName}</a>
                                             </TableRowColumn>
