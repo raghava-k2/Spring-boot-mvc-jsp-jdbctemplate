@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
     Table,
@@ -13,7 +13,8 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
-import {Label} from 'react-bootstrap'
+import Checkbox from 'material-ui/Checkbox';
+import { Label } from 'react-bootstrap'
 import CreateJob from '../../containers/schedulerCon/CreateJobContainer'
 import './scheduler.css'
 
@@ -46,9 +47,6 @@ class Scheduler extends Component {
             .bind(this)
         this.handleDelete = this
             .handleDelete
-            .bind(this)
-        this.isSelected = this
-            .isSelected
             .bind(this)
         this.handleRowSelection = this
             .handleRowSelection
@@ -88,16 +86,10 @@ class Scheduler extends Component {
             .deleteJob()
     }
 
-    isSelected(id) {
-        return (this.props.deleteList.indexOf(id) !== -1)
-    }
-
     handleRowSelection(id) {
         this
             .props
-            .insertIntoDeleteList((id.length === 0
-                ? 'notall'
-                : id), this.props.jobResults.length)
+            .insertIntoDeleteList(id, this.props.jobResults)
     }
 
     render() {
@@ -109,51 +101,57 @@ class Scheduler extends Component {
                         <TextField
                             hintText="UserName"
                             style={{
-                            display: 'inline-block'
-                        }}
+                                display: 'inline-block'
+                            }}
                             underlineShow={false}
-                            onChange={(e, v) => this.addSearchValues({'userName': v})}/>
+                            onChange={(e, v) => this.addSearchValues({ 'userName': v })} />
                         <TextField
                             hintText="GroupName"
                             style={{
-                            display: 'inline-block'
-                        }}
+                                display: 'inline-block'
+                            }}
                             underlineShow={false}
-                            onChange={(e, v) => this.addSearchValues({'grpName': v})}/>
+                            onChange={(e, v) => this.addSearchValues({ 'grpName': v })} />
                         <TextField
                             hintText="JobName"
                             style={{
-                            display: 'inline-block'
-                        }}
+                                display: 'inline-block'
+                            }}
                             underlineShow={false}
-                            onChange={(e, v) => this.addSearchValues({'jobName': v})}/>
+                            onChange={(e, v) => this.addSearchValues({ 'jobName': v })} />
                         <TextField
                             hintText="Status"
                             style={{
-                            display: 'inline-block'
-                        }}
+                                display: 'inline-block'
+                            }}
                             underlineShow={false}
-                            onChange={(e, v) => this.addSearchValues({'status': v})}/>
+                            onChange={(e, v) => this.addSearchValues({ 'status': v })} />
                         <RaisedButton
                             label="Search"
                             primary={true}
                             onTouchTap={this.handleSubmit}
                             style={{
-                            display: 'inline-block'
-                        }}/>
-                        <Divider/>
+                                display: 'inline-block'
+                            }} />
+                        <Divider />
                     </Paper>
                     <section
                         style={{
-                        marginLeft: '20px',
-                        marginTop: '10px'
-                    }}>
+                            marginLeft: '20px',
+                            marginTop: '10px'
+                        }}>
                         <div className='customadd' onClick={this.handleAdd}>+</div>
                         <div className='customremove' onClick={this.handleDelete}>-</div>
                     </section>
-                    <Table onRowSelection={this.handleRowSelection} multiSelectable={true}>
-                        <TableHeader>
+                    <Table multiSelectable={false}>
+                        <TableHeader
+                            displaySelectAll={false}
+                            enableSelectAll={false}>
                             <TableRow>
+                                <TableHeaderColumn><Checkbox
+                                    label=''
+                                    onCheck={(e, v) => this.handleRowSelection('all')}
+                                /></TableHeaderColumn>
                                 <TableHeaderColumn>Job</TableHeaderColumn>
                                 <TableHeaderColumn>GroupName</TableHeaderColumn>
                                 <TableHeaderColumn>StartDate</TableHeaderColumn>
@@ -161,13 +159,18 @@ class Scheduler extends Component {
                                 <TableHeaderColumn>UserName</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
-                        <TableBody stripedRows={true}>
+                        <TableBody displayRowCheckbox={false} stripedRows={true}>
                             {this
                                 .props
                                 .jobResults
                                 .map((obj, i) => {
                                     return (
-                                        <TableRow key={obj.jobId} selected={this.isSelected(i)}>
+                                        <TableRow key={obj.jobId}>
+                                            <TableRowColumn><Checkbox
+                                                label=''
+                                                onCheck={(e, v) => this.handleRowSelection(obj.jobId)}
+                                                checked={(this.props.deleteList.indexOf(obj.jobId) !== -1)}
+                                            /> </TableRowColumn>
                                             <TableRowColumn>
                                                 <a href='' onClick={e => this.handleDialog(e, i)}>{obj.jobName}</a>
                                             </TableRowColumn>
@@ -184,11 +187,11 @@ class Scheduler extends Component {
                         </TableBody>
                     </Table>
                 </Paper>
-                <CreateJob show={this.props.createJobData.show}/>
+                <CreateJob show={this.props.createJobData.show} />
                 <Snackbar
                     open={this.props.schedulerInfo.msg.length > 0}
                     message={this.props.schedulerInfo.msg}
-                    autoHideDuration={2000}/>
+                    autoHideDuration={2000} />
             </div>
         )
     }

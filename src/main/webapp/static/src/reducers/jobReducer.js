@@ -1,9 +1,9 @@
-import {deepClear} from '../components/util/util'
+import { deepClear } from '../components/util/util'
 const setDays = (state, day, action) => {
     Object
         .keys(state.days)
         .forEach((key) => {
-            if (key === day) 
+            if (key === day)
                 state.days[key] = action
         })
     return Object.assign({}, state)
@@ -14,7 +14,7 @@ export const jobReducer = (state = {
 }, action) => {
     switch (action.type) {
         case 'SHOW_DIALOG':
-            return {show: action.show}
+            return { show: action.show }
         default:
             return state
     }
@@ -49,35 +49,35 @@ export const jobDetailsReducer = (state = {
 }, action) => {
     switch (action.type) {
         case 'ADD_JOB_DETAILS':
-            return Object.assign({}, state, {jobName: action.value})
+            return Object.assign({}, state, { jobName: action.value })
         case 'ADD_JOB_GRP_DETAILS':
-            return Object.assign({}, state, {jobGrpName: action.value})
+            return Object.assign({}, state, { jobGrpName: action.value })
         case 'ADD_START_DATE_DETAILS':
-            return Object.assign({}, state, {startDate: action.value})
+            return Object.assign({}, state, { startDate: action.value })
         case 'ADD_START_TIME_DETAILS':
-            return Object.assign({}, state, {startTime: action.value})
+            return Object.assign({}, state, { startTime: action.value })
         case 'ADD_END_DATE_DETAILS':
-            return Object.assign({}, state, {endDate: action.value})
+            return Object.assign({}, state, { endDate: action.value })
         case 'ADD_END_TIME_DETAILS':
-            return Object.assign({}, state, {endTime: action.value})
+            return Object.assign({}, state, { endTime: action.value })
         case 'ADD_FILE_SPEC_DETAILS':
-            return Object.assign({}, state, {fileSpec: action.value})
+            return Object.assign({}, state, { fileSpec: action.value })
         case 'ADD_MAP_DETAILS':
-            return Object.assign({}, state, {mapName: action.value})
+            return Object.assign({}, state, { mapName: action.value })
         case 'ADD_PAYROLL_DETAILS':
-            return Object.assign({}, state, {payroll: action.value})
+            return Object.assign({}, state, { payroll: action.value })
         case 'ADD_OUTPUT_FILE_DETAILS':
-            return Object.assign({}, state, {outputFile: action.value})
+            return Object.assign({}, state, { outputFile: action.value })
         case 'ADD_OUTPUT_FILE_NAME_DETAILS':
-            return Object.assign({}, state, {outputFileName: action.value})
+            return Object.assign({}, state, { outputFileName: action.value })
         case 'ADD_WEEK_DETAILS':
-            return Object.assign({}, state, {week: action.value})
+            return Object.assign({}, state, { week: action.value })
         case 'ADD_DAYS_DETAILS':
             return setDays(state, action.day, action.value)
         case 'INSERT_DETAILS':
             return Object.assign({}, state, action.value)
         case 'ADD_MSG':
-            return Object.assign({}, state, {msg: action.value})
+            return Object.assign({}, state, { msg: action.value })
         case 'CLEAR_VALUES':
             deepClear(state);
             return Object.assign({}, state, {
@@ -119,24 +119,20 @@ export const deleteList = (state = [], action) => {
     }
 }
 
-const validateList = (state, values, size) => {
-    if (values === 'all') {
-        let array = []
-        for (let i = 0; i < size; i++) 
-            array.push(i)
-        return array
-    } else if (values === 'notall') {
+const validateList = (state, value, size) => {
+    if (value === 'all' && state.length !== size.length) {
+        return size.map((obj, i) => {
+            return obj.jobId;
+        })
+    }
+    else if (state.length === size.length) {
         return []
     }
-    let flag = true
-    values.forEach((value, i) => {
-        if (state.indexOf(value) === -1) 
-            state.push(value)
-        else if (value !== i && flag) {
-            flag = false
-            state.splice(i, 1)
-        }
-    });
+    if (state.indexOf(value) === -1)
+        state.push(value)
+    else {
+        state.splice(state.indexOf(value), 1)
+    }
     return state;
 }
 
@@ -145,7 +141,7 @@ export const schedulerData = (state = {
 }, action) => {
     switch (action.type) {
         case 'ADD_SCHEDULER_MSG':
-            return Object.assign({}, state, {msg: action.value})
+            return Object.assign({}, state, { msg: action.value })
         default:
             return state
     }
