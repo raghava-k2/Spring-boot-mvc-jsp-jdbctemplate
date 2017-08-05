@@ -104,10 +104,17 @@ export const jobDetailsReducer = (state = {
 export const jobResults = (state = [], action) => {
     switch (action.type) {
         case 'ADD_JOB_RESULT':
-            return Object.assign([], state, action.value)
+            return checkData(state, action)
         default:
             return state
     }
+}
+
+const checkData = (state, action) => {
+    if (action.value.length)
+        return Object.assign([], state, action.value)
+    else
+        return []
 }
 
 export const deleteList = (state = [], action) => {
@@ -128,7 +135,9 @@ const validateList = (state, value, size) => {
     else if (state.length === size.length) {
         return []
     }
-    if (state.indexOf(value) === -1)
+    else if (value === 'clear')
+        return []
+    else if (state.indexOf(value) === -1)
         state.push(value)
     else {
         state.splice(state.indexOf(value), 1)

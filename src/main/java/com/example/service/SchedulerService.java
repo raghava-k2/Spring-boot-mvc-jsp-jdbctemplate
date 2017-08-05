@@ -34,11 +34,11 @@ public class SchedulerService {
 	}
 
 	@Transactional
-	public JSONData deleteJobs(List<String> clientIds) {
+	public JSONData deleteJobs(List<String> jobIds) {
 		JSONData data = new JSONData();
-		for (String clientId : clientIds) {
-			data.setMsg(createJobInfoDAO.deleteJob(clientId));
-			if (StringUtil.isStringNullOrEmpty(data.getMsg())) {
+		for (String jobId : jobIds) {
+			data.setMsg(deleteSingleJob(jobId));
+			if (!StringUtil.isStringNullOrEmpty(data.getMsg())) {
 				data.setStatus("success");
 				continue;
 			} else {
@@ -47,6 +47,11 @@ public class SchedulerService {
 			}
 		}
 		return data;
+	}
+
+	@Transactional
+	private String deleteSingleJob(String jobId) {
+		return createJobInfoDAO.deleteJob(jobId);
 	}
 
 	@Transactional

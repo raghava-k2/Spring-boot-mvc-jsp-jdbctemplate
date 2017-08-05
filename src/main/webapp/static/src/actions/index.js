@@ -1,26 +1,30 @@
 import fetch from 'isomorphic-fetch'
-import {ActionUtil} from './actionUtil'
+import { ActionUtil } from './actionUtil'
 import URL from '../constants/url'
-import {loginUser} from './loginAction'
+import { loginUser } from './loginAction'
 import * as loading from './loadingAction'
-import {searchJob, insertJobDetailsIntoDialog, updateJobDetails, addDeleteList, deleteJobs} from './jobSearchAction'
+import { searchJob, insertJobDetailsIntoDialog, updateJobDetails, addDeleteList, deleteJobs } from './jobSearchAction'
 let headers = new Headers();
 headers.set('content-type', 'application/json;charset=UTF-8')
 
 export const showMenu = (show) => {
-  return {type: 'SHOW_MENU', show}
+  return { type: 'SHOW_MENU', show }
 }
 
 export const showDialog = (show) => {
-  return {type: 'SHOW_DIALOG', show}
+  return { type: 'SHOW_DIALOG', show }
 }
 
 export const jobDetails = (type, value, day) => {
-  return {type, value, day}
+  return { type, value, day }
 }
 
 export const storeRegistDetails = (type, value) => {
-  return {type, value}
+  return { type, value }
+}
+
+export const schedulerMessage = (value) => {
+  return { type: 'ADD_SCHEDULER_MSG', value }
 }
 
 export const createNewUser = () => {
@@ -46,5 +50,5 @@ export const createNewUser = () => {
   }
 }
 
-export {loginUser}
-export {searchJob, insertJobDetailsIntoDialog, updateJobDetails, addDeleteList, deleteJobs}
+export { loginUser }
+export { searchJob, insertJobDetailsIntoDialog, updateJobDetails, addDeleteList, deleteJobs }

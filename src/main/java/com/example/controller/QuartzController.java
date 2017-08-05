@@ -19,7 +19,7 @@ public class QuartzController {
 	private SchedulerService schedulerService;
 
 	@GetMapping("/jobdetails")
-	public List<JobInfo> jobDetails(String jobName) {
+	public List<JobInfo> jobDetails(String userName, String grpName, String jobName, String status) {
 		return schedulerService.getJobDetails(jobName);
 	}
 
@@ -34,7 +34,7 @@ public class QuartzController {
 	}
 
 	@RequestMapping(path = "/deletejob", method = RequestMethod.POST)
-	public JSONData deleteJob(@RequestBody List<String> clientIds) {
-		return schedulerService.deleteJobs(clientIds);
+	public JSONData deleteJob(@RequestBody List<String> jobIds) {
+		return schedulerService.deleteJobs(jobIds);
 	}
 }

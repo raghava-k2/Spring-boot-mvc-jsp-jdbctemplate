@@ -15,6 +15,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import Checkbox from 'material-ui/Checkbox';
 import { Label } from 'react-bootstrap'
+import Loading from '../../components/loadingCom/Loading'
 import CreateJob from '../../containers/schedulerCon/CreateJobContainer'
 import './scheduler.css'
 
@@ -29,7 +30,9 @@ class Scheduler extends Component {
         deleteList: PropTypes.array.isRequired,
         insertIntoDeleteList: PropTypes.func.isRequired,
         schedulerInfo: PropTypes.object.isRequired,
-        deleteJob: PropTypes.func.isRequired
+        deleteJob: PropTypes.func.isRequired,
+        schedulerData: PropTypes.func.isRequired,
+        loadingStatus: PropTypes.object.isRequired
     }
     constructor(props) {
         super(props)
@@ -51,6 +54,7 @@ class Scheduler extends Component {
         this.handleRowSelection = this
             .handleRowSelection
             .bind(this)
+        this.handleCloseSnackPack = this.handleCloseSnackPack.bind(this)
     }
 
     handleDialog(e, index) {
@@ -92,12 +96,16 @@ class Scheduler extends Component {
             .insertIntoDeleteList(id, this.props.jobResults)
     }
 
+    handleCloseSnackPack() {
+        this.props.schedulerData('')
+    }
+
     render() {
         return (
             <div className='scheduler'>
                 <Paper zDepth={1}>
                     <Label>Job Scheduler/Monitor</Label>
-                    <Paper zDepth={1}>
+                    <Paper zDepth={1} style={{ 'text-align': 'center' }}>
                         <TextField
                             hintText="UserName"
                             style={{
@@ -143,16 +151,23 @@ class Scheduler extends Component {
                         <div className='customadd' onClick={this.handleAdd}>+</div>
                         <div className='customremove' onClick={this.handleDelete}>-</div>
                     </section>
-                    <Table multiSelectable={false}>
-                        <TableHeader
-                            displaySelectAll={false}
-                            enableSelectAll={false}>
+                    <h1>{this
+                        .props
+                        .jobResults.length}</h1>
+                    <Table>
+                        <TableHeader displaySelectAll={false}
+                            adjustForCheckbox={false}>
                             <TableRow>
                                 <TableHeaderColumn><Checkbox
                                     label=''
                                     onCheck={(e, v) => this.handleRowSelection('all')}
+                                    checked={((this.props.deleteList.length === this
+                                        .props
+                                        .jobResults.length) && this
+                                            .props
+                                            .jobResults.length) ? true : false}
                                 /></TableHeaderColumn>
-                                <TableHeaderColumn>Job</TableHeaderColumn>
+                                <TableHeaderColumn>JobName</TableHeaderColumn>
                                 <TableHeaderColumn>GroupName</TableHeaderColumn>
                                 <TableHeaderColumn>StartDate</TableHeaderColumn>
                                 <TableHeaderColumn>Status</TableHeaderColumn>
@@ -162,28 +177,36 @@ class Scheduler extends Component {
                         <TableBody displayRowCheckbox={false} stripedRows={true}>
                             {this
                                 .props
-                                .jobResults
-                                .map((obj, i) => {
-                                    return (
-                                        <TableRow key={obj.jobId}>
-                                            <TableRowColumn><Checkbox
-                                                label=''
-                                                onCheck={(e, v) => this.handleRowSelection(obj.jobId)}
-                                                checked={(this.props.deleteList.indexOf(obj.jobId) !== -1)}
-                                            /> </TableRowColumn>
-                                            <TableRowColumn>
-                                                <a href='' onClick={e => this.handleDialog(e, i)}>{obj.jobName}</a>
-                                            </TableRowColumn>
-                                            <TableRowColumn>
-                                                {obj.jobGroupName}
-                                            </TableRowColumn>
-                                            <TableRowColumn>{obj.jobDateTime}</TableRowColumn>
-                                            <TableRowColumn>{obj.status}</TableRowColumn>
-                                            <TableRowColumn>{obj.userName}</TableRowColumn>
-                                        </TableRow>
-                                    )
-                                })}
-
+                                .jobResults.length && this
+                                    .props
+                                    .jobResults
+                                    .map((obj, i) => {
+                                        return (
+                                            <TableRow key={i}>
+                                                <TableRowColumn><Checkbox
+                                                    label=''
+                                                    onCheck={(e, v) => this.handleRowSelection(obj.jobId)}
+                                                    checked={(this.props.deleteList.indexOf(obj.jobId) !== -1)}
+                                                /> </TableRowColumn>
+                                                <TableRowColumn>
+                                                    <a href='' onClick={e => this.handleDialog(e, i)}>{obj.jobName}</a>
+                                                </TableRowColumn>
+                                                <TableRowColumn>
+                                                    {obj.jobGroupName}
+                                                </TableRowColumn>
+                                                <TableRowColumn>{obj.jobDateTime}</TableRowColumn>
+                                                <TableRowColumn>{obj.status}</TableRowColumn>
+                                                <TableRowColumn>{obj.userName}</TableRowColumn>
+                                            </TableRow>
+                                        )
+                                    })}
+                            {!this
+                                .props
+                                .jobResults.length &&
+                                <TableRow key={0}>
+                                    <TableRowColumn colSpan={6}>No Data
+                                    </TableRowColumn>
+                                </TableRow>}
                         </TableBody>
                     </Table>
                 </Paper>
@@ -191,7 +214,9 @@ class Scheduler extends Component {
                 <Snackbar
                     open={this.props.schedulerInfo.msg.length > 0}
                     message={this.props.schedulerInfo.msg}
-                    autoHideDuration={2000} />
+                    autoHideDuration={2000}
+                    onRequestClose={this.handleCloseSnackPack} />
+                <Loading show={this.props.loadingStatus.isFetching} />
             </div>
         )
     }

@@ -263,7 +263,7 @@ public class CreateJobInfoDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<JobDetails> getUserJobDetailsById(String id) {
-		LOG.info("Find Job details by jobId :", id);
+		LOG.info("Find Job details by jobId : " + id);
 		return hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(JobDetails.class)
 				.add(Restrictions.eq("id", new BigDecimal(id))).list();
 	}

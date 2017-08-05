@@ -15,7 +15,7 @@ const jobDetails = (type, value) => {
 
 const preparequeryStrng = (params, username) => {
     let param = new URLSearchParams();
-    param.append('userName', username
+    param.append('userName', params.username
         ? params.username
         : '')
     param.append('grpName', params.grpName
@@ -44,10 +44,14 @@ export const searchJob = (params) => {
             return response.json()
         }).then(json => {
             dispatch(loading.loadingRequest(false))
+            dispatch(addDeleteList('clear', []))
+            dispatch(schedulerMessage(''))
             dispatch(searchDetails('ADD_JOB_RESULT', json))
         }).catch(response => {
             dispatch(loading.loadingRequest(false))
             console.log(response)
+            dispatch(addDeleteList('clear', []))
+            dispatch(schedulerMessage(''))
         })
     }
 }
@@ -88,10 +92,15 @@ const markDays = (days) => {
         thrusday: false,
         friday: false,
         saturday: false
-    };
-    days.forEach(function (d) {
-        day[Object.keys(day)[d - 1]] = true
-    });
+    }
+    if (days[0] !== '*')
+        days.forEach(function (d) {
+            day[Object.keys(day)[d - 1]] = true
+        });
+    else
+        Object.keys(day).forEach((d) => {
+            day[d] = true
+        })
     return day;
 }
 
@@ -117,7 +126,7 @@ export const updateJobDetails = (updateOrCreate) => {
             dispatch(jobDetails('ADD_MSG', response.data.msg))
         }).catch(response => {
             dispatch(loading.loadingRequest(false))
-            console.log(response)
+            dispatch(jobDetails('ADD_MSG', 'Error occured during update/create'))
         })
     }
 }
@@ -186,26 +195,32 @@ const schedulerMessage = (value) => {
 
 export const deleteJobs = () => {
     return (dispatch, getState) => {
-        dispatch(loading.loadingRequest(true))
-        return axios({
-            method: 'post',
-            url: URL.deleteJob,
-            data: JSON.stringify(getState().deleteList),
-            headers: {
-                'content-type': 'application/json;charset=UTF-8'
-            },
-            auth: {
-                username: getState().loginReducer.userName,
-                password: getState().loginReducer.password
-            },
-            withCredentials: true
-        }).then(response => {
-            dispatch(loading.loadingRequest(false))
-            dispatch(schedulerMessage(response.data.msg))
-            dispatch(addDeleteList('all'))
-        }).catch(response => {
-            dispatch(loading.loadingRequest(false))
-            dispatch(schedulerMessage("Error occured while deleting"))
-        })
+        if (getState().deleteList.length) {
+            dispatch(loading.loadingRequest(true))
+            return axios({
+                method: 'post',
+                url: URL.deleteJob,
+                data: JSON.stringify(getState().deleteList),
+                headers: {
+                    'content-type': 'application/json;charset=UTF-8'
+                },
+                auth: {
+                    username: getState().loginReducer.userName,
+                    password: getState().loginReducer.password
+                },
+                withCredentials: true
+            }).then(response => {
+                dispatch(loading.loadingRequest(false))
+                dispatch(schedulerMessage(response.data.msg))
+                dispatch(addDeleteList('clear', []))
+            }).catch(response => {
+                dispatch(loading.loadingRequest(false))
+                dispatch(addDeleteList('clear', []))
+                dispatch(schedulerMessage("Error occured while deleting"))
+            })
+        }
+        else {
+            dispatch(schedulerMessage("Please select atleast one record and click delete"))
+        }
     }
 }
