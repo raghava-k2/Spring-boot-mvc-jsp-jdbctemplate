@@ -9,10 +9,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -61,9 +61,9 @@ public class CreateJobInfoDAO {
 		return "success";
 	}
 
-	public List<JobInfo> getJobDetailsByName(String jobName) {
+	public List<JobInfo> getJobDetailsByName(String userName, String grpName, String jobName, String status) {
 		try {
-			return getAllJobDetails(jobName);
+			return getAllJobDetails(userName, grpName, jobName, status);
 		} catch (SQLException | SchedulerException e) {
 			LOG.error("SQL/Scheduled Exception in getJobDeails method :", e);
 		} catch (Exception e) {
@@ -139,27 +139,38 @@ public class CreateJobInfoDAO {
 		return JobUtil.createJob(info);
 	}
 
-	private List<JobInfo> getAllJobDetails(String jobName) throws SQLException, SchedulerException {
+	@SuppressWarnings("unchecked")
+	private List<JobInfo> getAllJobDetails(String userName, String grpName, String jobName, String status)
+			throws SQLException, SchedulerException {
+		LOG.info("Query parameters userName :" + userName + "groupName :" + grpName + "JobName :" + jobName + "status :"
+				+ status);
+		StringBuilder jobDetailsQuery = new StringBuilder(
+				"select j.id as clientId,j.userName as userName,jb.jobName as jobName,"
+						+ "jb.jobGrpName as jobGroupName,jb.jobDesc as jobDescription,"
+						+ "jb.job.id as jobId from Job j,JobDetails jb where j.id=jb.job");
 		List<JobInfo> jobInfosList = new ArrayList<>();
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(Job.class);
+		if (!StringUtil.isStringNullOrEmpty(userName))
+			jobDetailsQuery.append(" and j.userName = :userName");
+		if (!StringUtil.isStringNullOrEmpty(grpName))
+			jobDetailsQuery.append(" and jb.jobGrpName = :grpName");
 		if (!StringUtil.isStringNullOrEmpty(jobName))
-			criteria.add(Restrictions.eq("userName", jobName));
-		criteria.addOrder(Order.desc("createdDate"));
-		for (Object userjob : criteria.list()) {
-			for (JobDetails details : ((Job) userjob).getJobsDetails()) {
-				JobInfo jobInfo = new JobInfo();
-				jobInfo.setClientId(((Job) userjob).getId().toString());
-				jobInfo.setUserName(((Job) userjob).getUserName());
-				jobInfo.setJobName(details.getJobName());
-				jobInfo.setJobGroupName(details.getJobGrpName());
-				jobInfo.setJobDescription(details.getJobDesc());
-				jobInfo.setJobId(details.getId().toString());
-				this.getQrtxTriggerDetails(jobInfo);
-				this.getQrtxJobDetails(jobInfo);
-				this.getCronDetails(jobInfo);
-				jobInfosList.add(jobInfo);
-			}
+			jobDetailsQuery.append(" and jb.jobName = :jobName");
+		jobDetailsQuery.append(" order by jb.createdDate desc");
+		Query query = session.createQuery(jobDetailsQuery.toString());
+		if (!StringUtil.isStringNullOrEmpty(userName))
+			query.setString("userName", userName);
+		if (!StringUtil.isStringNullOrEmpty(grpName))
+			query.setString("grpName", grpName);
+		if (!StringUtil.isStringNullOrEmpty(jobName))
+			query.setString("jobName", jobName);
+		query.setResultTransformer(Transformers.aliasToBean(JobInfo.class));
+		for (JobInfo info : (List<JobInfo>) query.list()) {
+			this.getQrtxTriggerDetails(info);
+			this.getQrtxJobDetails(info);
+			this.getCronDetails(info);
+			if (StringUtil.isStringNullOrEmpty(status) || info.getStatus().equalsIgnoreCase(status))
+				jobInfosList.add(info);
 		}
 		return jobInfosList;
 	}
@@ -211,10 +222,10 @@ public class CreateJobInfoDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Job> getJobDetailsById(String id) {
+	private List<Job> getJobDetailsById(BigDecimal id) {
 		LOG.info("Search user job by client Id :" + id);
 		return hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(Job.class)
-				.add(Restrictions.eq("id", new BigDecimal(id))).list();
+				.add(Restrictions.eq("id", id)).list();
 	}
 
 	private Boolean deleteJobDetails(String id) throws SQLException {

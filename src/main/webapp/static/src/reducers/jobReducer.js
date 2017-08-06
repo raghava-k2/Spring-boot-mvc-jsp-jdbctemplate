@@ -112,7 +112,7 @@ export const jobResults = (state = [], action) => {
 
 const checkData = (state, action) => {
     if (action.value.length)
-        return Object.assign([], state, action.value)
+        return Object.assign([], action.value)
     else
         return []
 }

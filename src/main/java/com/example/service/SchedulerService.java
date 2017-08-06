@@ -29,8 +29,8 @@ public class SchedulerService {
 	}
 
 	@Transactional
-	public List<JobInfo> getJobDetails(String jobName) {
-		return createJobInfoDAO.getJobDetailsByName(jobName);
+	public List<JobInfo> getJobDetails(String userName, String grpName, String jobName, String status) {
+		return createJobInfoDAO.getJobDetailsByName(userName, grpName, jobName, status);
 	}
 
 	@Transactional

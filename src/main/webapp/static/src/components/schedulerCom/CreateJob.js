@@ -1,18 +1,18 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import {List} from 'material-ui/List';
+import { List } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Checkbox from 'material-ui/Checkbox';
 import TextField from 'material-ui/TextField';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
+import { Tabs, Tab } from 'material-ui/Tabs';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
-import {Well} from 'react-bootstrap'
+import { Well } from 'react-bootstrap'
 import './createJob.css'
 
 export default class CreateJob extends Component {
@@ -60,26 +60,26 @@ export default class CreateJob extends Component {
     }
 
     render() {
-        const actions = [ < FlatButton label = "Cancel" primary = {
-                true
-            }
-            onTouchTap = {
+        const actions = [< FlatButton label="Cancel" primary={
+            true
+        }
+            onTouchTap={
                 this.handleClose
-            } />, < FlatButton label = "Submit" primary = {
+            } />, < FlatButton label="Submit" primary={
                 true
             }
-            keyboardFocused = {
-                true
-            }
-            onTouchTap = {
-                this.handleSubmit
-            } />
+                keyboardFocused={
+                    true
+                }
+                onTouchTap={
+                    this.handleSubmit
+                } />
         ];
 
         return (
             <div className='jobDialog'>
                 <Dialog
-                    title="Create Job"
+                    title={this.props.jobDetails.isUpdate ? "Update Job" : "Create Job"}
                     actions={actions}
                     modal={false}
                     open={this.props.show}
@@ -88,9 +88,9 @@ export default class CreateJob extends Component {
                     <div style={this.styles.root}>
                         {this.props.jobDetails.msg && <Well
                             style={{
-                            color: 'darkgreen'
-                        }}>{this.props.jobDetails.msg}</Well>
-}
+                                color: 'darkgreen'
+                            }}>{this.props.jobDetails.msg}</Well>
+                        }
                         <Tabs >
                             <Tab label="Job">
                                 <section className='jobSection'>
@@ -99,54 +99,56 @@ export default class CreateJob extends Component {
                                         <TextField
                                             hintText="ex:orpan job"
                                             errorText={this.props.jobDetails.jobName
-                                            ? ''
-                                            : 'This field is required'}
+                                                ? ''
+                                                : 'This field is required'}
                                             floatingLabelText='Enter Job Name'
                                             onChange={(e, v) => this.handleChange('ADD_JOB_DETAILS', v)}
-                                            value={this.props.jobDetails.jobName}/>
+                                            value={this.props.jobDetails.jobName}
+                                            disabled={this.props.jobDetails.isUpdate} />
                                         <TextField
                                             hintText="ex:daily runs"
                                             errorText={this.props.jobDetails.jobGrpName
-                                            ? ''
-                                            : "This field is required"}
+                                                ? ''
+                                                : "This field is required"}
                                             floatingLabelText="Enter Job Group Name"
                                             onChange={(e, v) => this.handleChange('ADD_JOB_GRP_DETAILS', v)}
-                                            value={this.props.jobDetails.jobGrpName}/>
-                                        <br/>
+                                            value={this.props.jobDetails.jobGrpName}
+                                            disabled={this.props.jobDetails.isUpdate} />
+                                        <br />
                                         <DatePicker
                                             hintText="StartDate"
                                             container="inline"
                                             style={{
-                                            display: 'inline-block'
-                                        }}
+                                                display: 'inline-block'
+                                            }}
                                             formatDate={(d) => d.toLocaleDateString()}
                                             onChange={(e, v) => this.handleChange('ADD_START_DATE_DETAILS', v)}
-                                            value={this.props.jobDetails.startDate}/>
+                                            value={this.props.jobDetails.startDate} />
                                         <TimePicker
                                             hintText="StartTime"
                                             autoOk={true}
                                             onChange={(e, v) => this.handleChange('ADD_START_TIME_DETAILS', v)}
                                             value={this.props.jobDetails.startTime}
                                             style={{
-                                            display: 'inline-block'
-                                        }}/>
+                                                display: 'inline-block'
+                                            }} />
                                         <DatePicker
                                             hintText="EndDate"
                                             container="inline"
                                             style={{
-                                            display: 'inline-block'
-                                        }}
+                                                display: 'inline-block'
+                                            }}
                                             formatDate={(d) => d.toLocaleDateString()}
                                             onChange={(e, v) => this.handleChange('ADD_END_DATE_DETAILS', v)}
-                                            value={this.props.jobDetails.endDate}/>
+                                            value={this.props.jobDetails.endDate} />
                                         <TimePicker
                                             hintText="EndTime"
                                             autoOk={true}
                                             onChange={(e, v) => this.handleChange('ADD_END_TIME_DETAILS', v)}
                                             value={this.props.jobDetails.endTime}
                                             style={{
-                                            display: 'inline-block'
-                                        }}/>
+                                                display: 'inline-block'
+                                            }} />
                                     </List>
                                 </section>
                             </Tab>
@@ -154,9 +156,9 @@ export default class CreateJob extends Component {
                                 <section className='filterSection'>
                                     <List
                                         style={{
-                                        display: 'inline-block',
-                                        'borderRightStyle': 'insert'
-                                    }}>
+                                            display: 'inline-block',
+                                            'borderRightStyle': 'insert'
+                                        }}>
                                         <Subheader>Recurrence Pattern</Subheader>
                                         <RadioButtonGroup
                                             name="shipSpeed"
@@ -164,47 +166,47 @@ export default class CreateJob extends Component {
                                             valueSelected={this.props.jobDetails.week}
                                             onChange={(e, v) => this.handleChange('ADD_WEEK_DETAILS', v)}
                                             style={{
-                                            'paddingLeft': '18px'
-                                        }}>
-                                            <RadioButton value="daily" label="Daily"/>
-                                            <RadioButton value="weekly" label="Weekly"/>
-                                            <RadioButton value="monthly" label="Monthly"/>
-                                            <RadioButton value="yearly" label="Yearly"/>
+                                                'paddingLeft': '18px'
+                                            }}>
+                                            <RadioButton value="daily" label="Daily" />
+                                            <RadioButton value="weekly" label="Weekly" />
+                                            <RadioButton value="monthly" label="Monthly" />
+                                            <RadioButton value="yearly" label="Yearly" />
                                         </RadioButtonGroup>
                                     </List>
                                     <List
                                         style={{
-                                        display: 'inline-block',
-                                        width: '460px'
-                                    }}>
+                                            display: 'inline-block',
+                                            width: '460px'
+                                        }}>
                                         <Checkbox
                                             label='Sunday'
                                             checked={this.props.jobDetails.days.sunday}
-                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'sunday')}/>
+                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'sunday')} />
                                         <Checkbox
                                             label='Monday'
                                             checked={this.props.jobDetails.days.monday}
-                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'monday')}/>
+                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'monday')} />
                                         <Checkbox
                                             label='Tuesday'
                                             checked={this.props.jobDetails.days.tuesday}
-                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'tuesday')}/>
+                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'tuesday')} />
                                         <Checkbox
                                             label='Wednesday'
                                             checked={this.props.jobDetails.days.wednesday}
-                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'wednesday')}/>
+                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'wednesday')} />
                                         <Checkbox
                                             label='Thrusday'
                                             checked={this.props.jobDetails.days.thrusday}
-                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'thrusday')}/>
+                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'thrusday')} />
                                         <Checkbox
                                             label='Friday'
                                             checked={this.props.jobDetails.days.friday}
-                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'friday')}/>
+                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'friday')} />
                                         <Checkbox
                                             label='Saturday'
                                             checked={this.props.jobDetails.days.saturday}
-                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'saturday')}/>
+                                            onCheck={(e, v) => this.handleChange('ADD_DAYS_DETAILS', v, 'saturday')} />
                                     </List>
                                 </section>
                             </Tab>
@@ -216,50 +218,50 @@ export default class CreateJob extends Component {
                                             floatingLabelText="File Spec Name"
                                             value={this.props.jobDetails.fileSpec}
                                             onChange={(e, i, v) => {
-                                            this.handleChange('ADD_FILE_SPEC_DETAILS', v)
-                                        }}>
-                                            <MenuItem value={'QB custom1'} primaryText="QB custom1"/>
-                                            <MenuItem value={'File spec1'} primaryText="File spec1"/>
-                                            <MenuItem value={'File spec2'} primaryText="File Spec2"/>
-                                            <MenuItem value={'File spec3'} primaryText="File Spec3"/>
-                                            <MenuItem value={'File spec4'} primaryText="File Spec4"/>
+                                                this.handleChange('ADD_FILE_SPEC_DETAILS', v)
+                                            }}>
+                                            <MenuItem value={'QB custom1'} primaryText="QB custom1" />
+                                            <MenuItem value={'File spec1'} primaryText="File spec1" />
+                                            <MenuItem value={'File spec2'} primaryText="File Spec2" />
+                                            <MenuItem value={'File spec3'} primaryText="File Spec3" />
+                                            <MenuItem value={'File spec4'} primaryText="File Spec4" />
                                         </SelectField>
                                         <SelectField
                                             floatingLabelText="Map Name"
                                             value={this.props.jobDetails.mapName}
                                             onChange={(e, i, v) => this.handleChange('ADD_MAP_DETAILS', v)}>
-                                            <MenuItem value={'Map1'} primaryText="Map1"/>
-                                            <MenuItem value={'Map2'} primaryText="Map2"/>
-                                            <MenuItem value={'Map3'} primaryText="Map3"/>
-                                            <MenuItem value={'Map4'} primaryText="Map4"/>
-                                            <MenuItem value={'Map5'} primaryText="Map5"/>
+                                            <MenuItem value={'Map1'} primaryText="Map1" />
+                                            <MenuItem value={'Map2'} primaryText="Map2" />
+                                            <MenuItem value={'Map3'} primaryText="Map3" />
+                                            <MenuItem value={'Map4'} primaryText="Map4" />
+                                            <MenuItem value={'Map5'} primaryText="Map5" />
                                         </SelectField>
                                         <SelectField
                                             floatingLabelText="Payroll File"
                                             value={this.props.jobDetails.payroll}
                                             onChange={(e, i, v) => this.handleChange('ADD_PAYROLL_DETAILS', v)}>
-                                            <MenuItem value={'Payroll1'} primaryText="Payroll1"/>
-                                            <MenuItem value={'Payroll2'} primaryText="Payroll2"/>
-                                            <MenuItem value={'Payroll3'} primaryText="Payroll3"/>
-                                            <MenuItem value={'Payroll4'} primaryText="Payroll4"/>
-                                            <MenuItem value={'Payroll5'} primaryText="Payroll5"/>
+                                            <MenuItem value={'Payroll1'} primaryText="Payroll1" />
+                                            <MenuItem value={'Payroll2'} primaryText="Payroll2" />
+                                            <MenuItem value={'Payroll3'} primaryText="Payroll3" />
+                                            <MenuItem value={'Payroll4'} primaryText="Payroll4" />
+                                            <MenuItem value={'Payroll5'} primaryText="Payroll5" />
                                         </SelectField>
                                         <SelectField
                                             floatingLabelText="Outfull File format"
                                             value={this.props.jobDetails.outputFile}
                                             onChange={(e, i, v) => this.handleChange('ADD_OUTPUT_FILE_DETAILS', v)}>
-                                            <MenuItem value={'CSV'} primaryText="CSV"/>
-                                            <MenuItem value={'IIF'} primaryText="IIF"/>
-                                            <MenuItem value={'XML'} primaryText="XML"/>
+                                            <MenuItem value={'CSV'} primaryText="CSV" />
+                                            <MenuItem value={'IIF'} primaryText="IIF" />
+                                            <MenuItem value={'XML'} primaryText="XML" />
                                         </SelectField>
                                         <TextField
                                             hintText="ex:outputfile.csv"
                                             errorText={this.props.jobDetails.outputFileName
-                                            ? ''
-                                            : 'This field is required'}
+                                                ? ''
+                                                : 'This field is required'}
                                             floatingLabelText="Enter OutputFile Name"
                                             value={this.props.jobDetails.outputFileName}
-                                            onChange={(e, v) => this.handleChange('ADD_OUTPUT_FILE_NAME_DETAILS', v)}/>
+                                            onChange={(e, v) => this.handleChange('ADD_OUTPUT_FILE_NAME_DETAILS', v)} />
                                     </List>
                                 </section>
                             </Tab>

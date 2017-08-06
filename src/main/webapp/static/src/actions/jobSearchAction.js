@@ -15,8 +15,8 @@ const jobDetails = (type, value) => {
 
 const preparequeryStrng = (params, username) => {
     let param = new URLSearchParams();
-    param.append('userName', params.username
-        ? params.username
+    param.append('userName', params.userName
+        ? params.userName
         : '')
     param.append('grpName', params.grpName
         ? params.grpName

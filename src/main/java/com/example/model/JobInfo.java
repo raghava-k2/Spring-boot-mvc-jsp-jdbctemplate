@@ -1,9 +1,10 @@
 package com.example.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class JobInfo {
-	private String clientId;
+	private BigDecimal clientId;
 	private String userName;
 	private String jobName;
 	private String jobGroupName;
@@ -16,7 +17,7 @@ public class JobInfo {
 	private GLInfo glInfo;
 	private String nextExecTime;
 	private String status;
-	private String jobId;
+	private BigDecimal jobId;
 
 	public String getJobEndtime() {
 		return jobEndtime;
@@ -114,19 +115,19 @@ public class JobInfo {
 		this.glInfo = glInfo;
 	}
 
-	public String getClientId() {
+	public BigDecimal getClientId() {
 		return clientId;
 	}
 
-	public void setClientId(String clientId) {
+	public void setClientId(BigDecimal clientId) {
 		this.clientId = clientId;
 	}
 
-	public String getJobId() {
+	public BigDecimal getJobId() {
 		return jobId;
 	}
 
-	public void setJobId(String jobId) {
+	public void setJobId(BigDecimal jobId) {
 		this.jobId = jobId;
 	}
 }

@@ -20,7 +20,7 @@ public class QuartzController {
 
 	@GetMapping("/jobdetails")
 	public List<JobInfo> jobDetails(String userName, String grpName, String jobName, String status) {
-		return schedulerService.getJobDetails(jobName);
+		return schedulerService.getJobDetails(userName, grpName, jobName, status);
 	}
 
 	@RequestMapping(path = "/createjob", method = RequestMethod.POST)

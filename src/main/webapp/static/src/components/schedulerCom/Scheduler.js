@@ -151,9 +151,6 @@ class Scheduler extends Component {
                         <div className='customadd' onClick={this.handleAdd}>+</div>
                         <div className='customremove' onClick={this.handleDelete}>-</div>
                     </section>
-                    <h1>{this
-                        .props
-                        .jobResults.length}</h1>
                     <Table>
                         <TableHeader displaySelectAll={false}
                             adjustForCheckbox={false}>
